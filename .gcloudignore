@@ -1,0 +1,87 @@
+# .gcloudignore - Google Cloud Build ignore file
+# Files listed here will not be uploaded to Cloud Build
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Database
+db.sqlite3
+*.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.cloudsql
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Media and static files (Cloud Run uses /tmp)
+media/
+staticfiles/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Docker (keep Dockerfile, exclude compose)
+docker-compose.yml
+
+# Deployment scripts (not needed in container)
+deploy-cloudsql.sh
+deploy-cloudsql.ps1
+deploy-to-cloudrun.sh
+deploy-to-cloudrun.ps1
+DEPLOYMENT_GUIDE.md
+cloudsql-proxy-config.txt
+
+# Git
+.git/
+.gitignore
+
+# Node
+node_modules/
+npm-debug.log

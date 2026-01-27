@@ -1,0 +1,117 @@
+{% extends 'forensics/base.html' %}
+
+{% block title %}API Documentation - TraceFlow{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>🚀 API Documentation</h2>
+    <p>TraceFlow provides a comprehensive RESTful API powered by Django Ninja.</p>
+    
+    <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+        <strong>📚 Interactive API Documentation:</strong><br>
+        <a href="/api/docs" target="_blank" style="color: #667eea; text-decoration: none;">
+            /api/docs - Swagger UI
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🔌 Available Endpoints</h3>
+    
+    <h4 style="color: #667eea; margin-top: 2rem;">Accounts</h4>
+    <ul style="line-height: 2;">
+        <li><code>GET /api/accounts</code> - List all accounts</li>
+        <li><code>GET /api/accounts/{id}</code> - Get account details</li>
+        <li><code>POST /api/accounts</code> - Create new account</li>
+        <li><code>DELETE /api/accounts/{id}</code> - Delete account</li>
+    </ul>
+    
+    <h4 style="color: #667eea; margin-top: 2rem;">Transactions</h4>
+    <ul style="line-height: 2;">
+        <li><code>GET /api/transactions</code> - List transactions</li>
+        <li><code>GET /api/transactions/{id}</code> - Get transaction details</li>
+        <li><code>POST /api/transactions</code> - Create new transaction</li>
+    </ul>
+    
+    <h4 style="color: #667eea; margin-top: 2rem;">Reconciliation</h4>
+    <ul style="line-height: 2;">
+        <li><code>GET /api/reconciliation/matches</code> - List reconciliation matches</li>
+        <li><code>GET /api/reconciliation/stats</code> - Get reconciliation statistics</li>
+        <li><code>POST /api/reconciliation/run</code> - Run automated reconciliation</li>
+        <li><code>GET /api/reconciliation/unmatched/{id}</code> - Get unmatched transactions</li>
+    </ul>
+    
+    <h4 style="color: #667eea; margin-top: 2rem;">Statistics</h4>
+    <ul style="line-height: 2;">
+        <li><code>GET /api/stats/summary</code> - Overall system statistics</li>
+        <li><code>GET /api/stats/accounts/{id}</code> - Account-specific statistics</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>📝 Example Usage</h3>
+    
+    <h4>Python Example:</h4>
+    <pre style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto;">
+import requests
+
+# Get all accounts
+response = requests.get('http://localhost:8000/api/accounts')
+accounts = response.json()
+
+# Create a new transaction
+transaction_data = {
+    "account_id": 1,
+    "date": "2026-01-26",
+    "amount": 1500.00,
+    "description": "Payment received",
+    "source_file": "invoice_001.pdf"
+}
+response = requests.post(
+    'http://localhost:8000/api/transactions',
+    json=transaction_data
+)
+
+# Run reconciliation
+reconcile_data = {
+    "bank_account_id": 1,
+    "book_account_id": 2
+}
+response = requests.post(
+    'http://localhost:8000/api/reconciliation/run',
+    json=reconcile_data
+)
+    </pre>
+    
+    <h4 style="margin-top: 2rem;">cURL Example:</h4>
+    <pre style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto;">
+# List all accounts
+curl http://localhost:8000/api/accounts
+
+# Get reconciliation stats
+curl http://localhost:8000/api/reconciliation/stats
+
+# Create new account
+curl -X POST http://localhost:8000/api/accounts \
+  -H "Content-Type: application/json" \
+  -d '{"name":"New Account","account_number":"12345","is_internal_book":false}'
+    </pre>
+</div>
+
+<div class="card">
+    <h3>🔗 Django Ledger Integration</h3>
+    <p>TraceFlow integrates with <strong>django-ledger</strong> for formal double-entry bookkeeping:</p>
+    
+    <ul style="line-height: 2;">
+        <li>✅ Use django-ledger for formal accounting (Chart of Accounts, Journal Entries, Financial Statements)</li>
+        <li>✅ Use TraceFlow for forensic evidence tracking and reconciliation</li>
+        <li>✅ Bridge module available: <code>forensics.ledger_integration</code></li>
+        <li>✅ Sync transactions between systems automatically</li>
+    </ul>
+    
+    <div style="background: #fff3cd; padding: 1rem; border-radius: 4px; margin-top: 1rem;">
+        <strong>Note:</strong> To use django-ledger features, run migrations after installation:
+        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">python manage.py migrate django_ledger</pre>
+    </div>
+</div>
+{% endblock %}

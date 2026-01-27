@@ -1,0 +1,224 @@
+{% extends 'forensics/base.html' %}
+
+{% block title %}Dashboard - TraceFlow{% endblock %}
+
+{% block content %}
+<style>
+    .hero-banner {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 2rem;
+        border-radius: 12px;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-banner::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="1200" height="400" fill="url(%23grid)" /></svg>') repeat;
+        opacity: 0.3;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 600px;
+    }
+    
+    .hero-banner h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin: 0 0 1rem 0;
+        line-height: 1.2;
+    }
+    
+    .hero-banner p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+    
+    .hero-visualization {
+        position: absolute;
+        right: 2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 300px;
+        height: 200px;
+        opacity: 0.2;
+        pointer-events: none;
+    }
+    
+    #hero-canvas {
+        width: 100%;
+        height: 100%;
+    }
+    
+    .cta-button {
+        display: inline-block;
+        background: #fbbf24;
+        color: #1f2937;
+        padding: 0.875rem 2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+    
+    .cta-button:hover {
+        background: #f59e0b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .expert-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        margin-top: 1.5rem;
+        font-size: 0.95rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .expert-badge strong {
+        color: #fbbf24;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-visualization {
+            display: none;
+        }
+        .hero-banner h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="hero-banner">
+    <canvas id="hero-canvas" class="hero-visualization"></canvas>
+    <div class="hero-content">
+        <h1>Know the Full Financial Truth</h1>
+        <p>Transform raw banking evidence and accounting data into evidential proof that's complete, accurate, and ready for the courtroom or boardroom in just hours.</p>
+        <p style="font-size: 0.95rem; opacity: 0.85;">Extract, verify, analyze, and visualize financial data, all in one platform. That's Verified Financial Intelligence.</p>
+        <div class="expert-badge">
+            ✓ Verified by <strong>Ali R</strong>, Financial Forensics Expert
+        </div>
+        <a href="{% url 'forensics:sankey' %}" class="cta-button">Explore Data Flow →</a>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; font-size: 2.5rem; margin-bottom: 0.5rem;">{{ total_accounts }}</h3>
+        <p style="color: #666;">Total Accounts</p>
+        <small style="color: #999;">{{ bank_accounts }} Bank | {{ book_accounts }} Book</small>
+    </div>
+    
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; font-size: 2.5rem; margin-bottom: 0.5rem;">{{ total_transactions }}</h3>
+        <p style="color: #666;">Total Transactions</p>
+    </div>
+    
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; font-size: 2.5rem; margin-bottom: 0.5rem;">{{ total_matches }}</h3>
+        <p style="color: #666;">Verified Matches</p>
+    </div>
+</div>
+
+<div class="card">
+    <h2>🚀 Quick Actions</h2>
+    <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+        <a href="{% url 'forensics:sankey' %}" style="background: #667eea; color: white; padding: 0.75rem 1.5rem; border-radius: 4px; text-decoration: none;">View Sankey Diagram</a>
+        <a href="{% url 'forensics:transaction_list' %}" style="background: #764ba2; color: white; padding: 0.75rem 1.5rem; border-radius: 4px; text-decoration: none;">Browse Transactions</a>
+    </div>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+    // Animated D3 visualization in hero banner
+    function animateHeroBanner() {
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        
+        let animationFrame = 0;
+        
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw animated nodes and connections
+            const time = animationFrame / 60;
+            
+            // Node positions
+            const nodes = [
+                { x: canvas.width * 0.2, y: canvas.height * 0.3, label: 'Bank' },
+                { x: canvas.width * 0.5, y: canvas.height * 0.1, label: 'Ledger' },
+                { x: canvas.width * 0.5, y: canvas.height * 0.9, label: 'Assets' },
+                { x: canvas.width * 0.8, y: canvas.height * 0.3, label: 'Records' },
+                { x: canvas.width * 0.5, y: canvas.height * 0.5, label: 'Verify' }
+            ];
+            
+            // Draw connections with animation
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const opacity = 0.2 + Math.sin(time * 2 + i + j) * 0.1;
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+                    ctx.stroke();
+                }
+            }
+            
+            // Draw animated nodes
+            nodes.forEach((node, index) => {
+                const pulse = Math.sin(time * 3 + index) * 2 + 4;
+                const nodeSize = 6 + pulse;
+                
+                // Node glow
+                ctx.fillStyle = `rgba(255, 255, 255, ${0.1 + pulse / 20})`;
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, nodeSize + 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Node core
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, nodeSize, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            animationFrame++;
+            if (animationFrame < 600) {
+                requestAnimationFrame(animate);
+            } else {
+                animationFrame = 0;
+                requestAnimationFrame(animate);
+            }
+        }
+        
+        animate();
+    }
+    
+    // Start animation when page loads
+    window.addEventListener('load', animateHeroBanner);
+</script>
+
+{% endblock %}

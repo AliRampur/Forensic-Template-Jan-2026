@@ -1,0 +1,30 @@
+{% extends 'forensics/base.html' %}
+
+{% block title %}Sankey View - TraceFlow{% endblock %}
+
+{% block content %}
+<style>
+    #sankey-chart {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 20px;
+        min-height: 600px;
+        margin-top: 2rem;
+    }
+</style>
+
+<div class="card">
+    <h2>🔍 Transaction Flow Analysis</h2>
+    <p>Visualizing the flow of transactions between accounts using an interactive Sankey diagram</p>
+</div>
+
+<div id="sankey-chart"></div>
+
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script>
+    var graphData = {{ graph_json|safe }};
+    Plotly.newPlot('sankey-chart', graphData.data, graphData.layout, {responsive: true});
+</script>
+
+{% endblock %}

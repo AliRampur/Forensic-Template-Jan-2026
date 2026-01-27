@@ -1,0 +1,86 @@
+{% extends 'forensics/base.html' %}
+
+{% block title %}Resume — {{ expert_name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h1 style="margin-bottom: 0.25rem;">{{ expert_name }}</h1>
+  <p style="color: #666; margin-bottom: 1rem;">{{ expert_title }}</p>
+  <p><a href="{{ linkedin_url }}" target="_blank" rel="noopener">View LinkedIn Profile</a></p>
+</div>
+
+<div class="card">
+  <h2>About</h2>
+  <p style="line-height: 1.6; margin-bottom: 1rem;">
+    12+ years of experience conducting corporate and FCPA investigations, anti-bribery and anti-corruption compliance assessments, enterprise-wide fraud risk assessments, forensic audits, and assisting with damage calculations in complex commercial litigation.
+  </p>
+  <p style="line-height: 1.6; margin-bottom: 1rem;">
+    Expertise includes working closely with internal and external counsel, compliance functions, senior leadership, and internal audit functions to conduct corporate investigations and collaborate on compliance or fraud risk assessments. Managed complex forensic accounting investigations involving financial misstatement and bribery &amp; corruption in both domestic and international locations.
+  </p>
+  <p style="line-height: 1.6;">
+    Completed the 16-Week Full-time Data Science / Machine Learning BootCamp at Flatiron School (October 2022). Passionate about implementing advanced analytics from investigation, compliance, and internal audit standpoints.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Experience</h2>
+  
+  <div style="margin-bottom: 1.5rem;">
+    <strong>Forensic Accountant / Aspiring Data Scientist — Independent Contractor</strong>
+    <div style="color: #666; font-size: 0.9rem;">Self-employed | Jun 2022 – Present</div>
+  </div>
+
+  <div style="margin-bottom: 1.5rem;">
+    <strong>Sr. Manager, Global Forensics &amp; Litigation Services</strong>
+    <div style="color: #666; font-size: 0.9rem;">Baker Tilly Virchow Krause, LLP | Oct 2016 – Jun 2022</div>
+    <ul style="margin-top: 0.5rem; margin-left: 1.25rem;">
+      <li>Led investigation into improper sales practices involving $100M+ ARR; identified ASC 606 violations resulting in executive termination and financial restatement.</li>
+      <li>Led investigation into Japanese Stock Exchange public company; managed 30+ practitioners analyzing sales data and conducting forensic interviews.</li>
+      <li>Managed SEC inquiry investigation; identified earnings manipulation over five-year period.</li>
+      <li>Performed bribery and corruption risk assessments for Fortune 1000 companies; utilized Power BI to aggregate 8M+ transactions and risk rank 15,000+ vendors.</li>
+      <li>Managed international investigations with onsite visits to South Africa and Brazil; coordinated with staff across 6+ countries.</li>
+    </ul>
+  </div>
+
+  <div style="margin-bottom: 1.5rem;">
+    <strong>AVP, Audit - Regulatory Reporting</strong>
+    <div style="color: #666; font-size: 0.9rem;">GE Capital | Nov 2014 – Oct 2016</div>
+    <ul style="margin-top: 0.5rem; margin-left: 1.25rem;">
+      <li>Led regulatory reporting and financial controls audits across GE Capital business units.</li>
+      <li>Directed cross-functional reviews analyzing thousands of loan transactions.</li>
+      <li>Led financial reporting and controls audits covering Oracle processes and G/L reconciliations.</li>
+      <li>Leveraged data analytics to identify operational gaps and control weaknesses.</li>
+    </ul>
+  </div>
+
+  <div style="margin-bottom: 1.5rem;">
+    <strong>Senior Associate</strong>
+    <div style="color: #666; font-size: 0.9rem;">Deloitte Financial Advisory Services LLP | Sep 2010 – Nov 2014</div>
+    <ul style="margin-top: 0.5rem; margin-left: 1.25rem;">
+      <li>Managed forensic engagements including corporate investigations, FCPA compliance, and fraud risk assessments.</li>
+      <li>Led investigation into alleged improper vendor payments; conducted 20+ forensic interviews.</li>
+      <li>Managed forensic vendor review to identify non-compliant billings and recover payments.</li>
+      <li>Conducted financial analysis procedures and identified millions in misappropriated funds.</li>
+      <li>Led entity-wide fraud risk assessment; created Tableau dashboard with 1,000+ fraud risk scenarios.</li>
+    </ul>
+  </div>
+
+  <div style="margin-bottom: 1rem;">
+    <strong>Forensic Services Intern</strong>
+    <div style="color: #666; font-size: 0.9rem;">KPMG | Jun 2009 – Aug 2009</div>
+  </div>
+
+  <div>
+    <strong>Spring Audit Intern</strong>
+    <div style="color: #666; font-size: 0.9rem;">Grant Thornton | Jan 2009 – Mar 2009</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Education</h2>
+  <ul style="margin-left: 1.25rem;">
+    <li>Data Science / Machine Learning BootCamp — Flatiron School (Oct 2022)</li>
+    <li>University of Illinois at Urbana-Champaign — College of Business</li>
+  </ul>
+</div>
+{% endblock %}
