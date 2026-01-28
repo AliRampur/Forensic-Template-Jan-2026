@@ -1,0 +1,194 @@
+{% extends 'forensics/base.html' %}
+{% load humanize %}
+{% load forensics_filters %}
+
+{% block title %}Inventory Metrics - TraceFlow{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">LHS Inventory Metrics</h1>
+            <p class="lead text-muted">Comprehensive forensic analysis of property inventory and commissions</p>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h6 class="card-subtitle mb-2 text-muted">Total Units</h6>
+                    <h2 class="card-title text-primary">{{ total_units|intcomma }}</h2>
+                    <p class="small mb-0">Across {{ total_properties }} Properties</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h6 class="card-subtitle mb-2 text-muted">Total Bank Balance</h6>
+                    <h2 class="card-title text-success">${{ total_bank_balance|floatformat:2|intcomma }}</h2>
+                    <p class="small mb-0">Per Unit BS Report</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h6 class="card-subtitle mb-2 text-muted">Total Sales</h6>
+                    <h2 class="card-title text-info">${{ total_sales|floatformat:2|intcomma }}</h2>
+                    <p class="small mb-0">Pre-tax Sale Amount</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h6 class="card-subtitle mb-2 text-muted">Total Commissions</h6>
+                    <h2 class="card-title text-warning">${{ total_commission_amount|floatformat:2|intcomma }}</h2>
+                    <p class="small mb-0">{{ total_commissions }} Commission Records</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LHS Ownership & Forensic Flags -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">LHS Ownership Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6 text-center border-end">
+                            <h4>{{ lhs_owned|intcomma }}</h4>
+                            <p class="text-muted mb-0">LHS Owned/Sold Units</p>
+                        </div>
+                        <div class="col-6 text-center">
+                            <h4>{{ lhs_rentals|intcomma }}</h4>
+                            <p class="text-muted mb-0">LHS Rental Units</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h4>${{ total_rental_income|floatformat:2|intcomma }}</h4>
+                        <p class="text-muted mb-0">Total Rental Income (GL Credits)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">🚨 Forensic Red Flags</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            MCO Mismatches
+                            <span class="badge bg-danger rounded-pill">{{ mco_mismatches }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            No MCO Available
+                            <span class="badge bg-danger rounded-pill">{{ no_mco_available }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Commission but No Sale
+                            <span class="badge bg-danger rounded-pill">{{ commission_no_sale }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            MCO Indicates Home Sale Entity
+                            <span class="badge bg-warning rounded-pill">{{ home_sale_entity_mco }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Commission Analysis -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card border-warning">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">Commission Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <h4>{{ unsupported_commissions_count }}</h4>
+                            <p class="text-muted">Unsupported Commissions</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h4 class="text-danger">${{ unsupported_commissions_total|floatformat:2|intcomma }}</h4>
+                            <p class="text-muted">Unsupported Amount</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            {% if total_commission_amount > 0 %}
+                            <h4>{{ unsupported_commissions_total|percentage:total_commission_amount|floatformat:1 }}%</h4>
+                            {% else %}
+                            <h4>0.0%</h4>
+                            {% endif %}
+                            <p class="text-muted">% of Total Commissions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Breakdown -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Property Breakdown</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Property</th>
+                                    <th class="text-end">Units</th>
+                                    <th class="text-end">Bank Balance</th>
+                                    <th class="text-end">Total Sales</th>
+                                    <th class="text-end">Commissions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for property in property_stats %}
+                                <tr>
+                                    <td><strong>{{ property.full_name }}</strong> ({{ property.short_name }})</td>
+                                    <td class="text-end">{{ property.unit_count|intcomma }}</td>
+                                    <td class="text-end">${{ property.total_balance|default:0|floatformat:2|intcomma }}</td>
+                                    <td class="text-end">${{ property.total_sales|default:0|floatformat:2|intcomma }}</td>
+                                    <td class="text-end">{{ property.commission_count|intcomma }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mb-4">
+        <div class="col-md-12 text-center">
+            <a href="{% url 'forensics:inventory_unit_list' %}" class="btn btn-primary btn-lg me-2">
+                <i class="bi bi-house"></i> View All Units
+            </a>
+            <a href="{% url 'forensics:commission_list' %}" class="btn btn-warning btn-lg me-2">
+                <i class="bi bi-currency-dollar"></i> View All Commissions
+            </a>
+            <a href="{% url 'forensics:inventory_unit_list' %}?show_issues=1" class="btn btn-danger btn-lg">
+                <i class="bi bi-exclamation-triangle"></i> View Flagged Units
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

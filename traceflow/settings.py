@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',  # For number formatting
     
     # Third-party apps
     # 'django_ledger',  # Disabled due to SQLite incompatibility with Python 3.14

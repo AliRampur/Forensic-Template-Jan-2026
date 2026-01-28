@@ -1,0 +1,201 @@
+{% extends 'forensics/base.html' %}
+{% load humanize %}
+
+{% block title %}Inventory Units - TraceFlow{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">Inventory Units</h1>
+            <p class="lead text-muted">Complete list of manufactured home inventory across all properties</p>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Filters</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-3">
+                            <label for="property" class="form-label">Property</label>
+                            <select name="property" id="property" class="form-select">
+                                <option value="">All Properties</option>
+                                {% for property in properties %}
+                                <option value="{{ property.id }}" {% if selected_property == property.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ property.full_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label d-block">&nbsp;</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="lhs_owned" id="lhs_owned" value="1" {% if lhs_owned %}checked{% endif %}>
+                                <label class="form-check-label" for="lhs_owned">
+                                    LHS Owned/Sold Only
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label d-block">&nbsp;</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="is_rental" id="is_rental" value="1" {% if is_rental %}checked{% endif %}>
+                                <label class="form-check-label" for="is_rental">
+                                    LHS Rentals Only
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label d-block">&nbsp;</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="show_issues" id="show_issues" value="1" {% if show_issues %}checked{% endif %}>
+                                <label class="form-check-label" for="show_issues">
+                                    Show Issues Only
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label d-block">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary">Apply Filters</button>
+                            <a href="{% url 'forensics:inventory_unit_list' %}" class="btn btn-secondary">Clear</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Units Table -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Units ({{ page_obj.paginator.count|intcomma }} total)</h5>
+                    <a href="{% url 'forensics:inventory_metrics' %}" class="btn btn-sm btn-light">Back to Metrics</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Unit</th>
+                                    <th>Property</th>
+                                    <th>Occupant</th>
+                                    <th class="text-end">Bank Balance</th>
+                                    <th class="text-end">Sale Amount</th>
+                                    <th class="text-end">Rental Income</th>
+                                    <th class="text-center">LHS</th>
+                                    <th class="text-center">Rental</th>
+                                    <th class="text-center">Issues</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for unit in units %}
+                                <tr>
+                                    <td><strong>{{ unit.unit_number }}</strong><br><small class="text-muted">{{ unit.property_unit }}</small></td>
+                                    <td>{{ unit.property.short_name }}</td>
+                                    <td>
+                                        {% if unit.current_occupant %}
+                                            {{ unit.current_occupant|truncatewords:3 }}
+                                        {% else %}
+                                            <span class="text-muted">Vacant</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if unit.bank_gl_balance %}
+                                            ${{ unit.bank_gl_balance|floatformat:2|intcomma }}
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if unit.sale_amount_pre_tax %}
+                                            ${{ unit.sale_amount_pre_tax|floatformat:2|intcomma }}
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if unit.gl_rental_income %}
+                                            ${{ unit.gl_rental_income|floatformat:2|intcomma }}
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if unit.current_lhs_property %}
+                                            <span class="badge bg-success">Yes</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">No</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if unit.is_lhs_rental %}
+                                            <span class="badge bg-info">Yes</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">No</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if unit.mco_not_match or unit.no_mco_available or unit.commission_but_no_sale or unit.mco_indicates_home_sale_entity %}
+                                            <span class="badge bg-danger" title="
+                                                {% if unit.mco_not_match %}MCO Mismatch. {% endif %}
+                                                {% if unit.no_mco_available %}No MCO. {% endif %}
+                                                {% if unit.commission_but_no_sale %}Commission w/o Sale. {% endif %}
+                                                {% if unit.mco_indicates_home_sale_entity %}Home Sale Entity MCO. {% endif %}
+                                            ">⚠</span>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center text-muted py-4">No units found matching the filters.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                {% if is_paginated %}
+                <div class="card-footer">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center mb-0">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if selected_property %}&property={{ selected_property }}{% endif %}{% if lhs_owned %}&lhs_owned=1{% endif %}{% if is_rental %}&is_rental=1{% endif %}{% if show_issues %}&show_issues=1{% endif %}">First</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if selected_property %}&property={{ selected_property }}{% endif %}{% if lhs_owned %}&lhs_owned=1{% endif %}{% if is_rental %}&is_rental=1{% endif %}{% if show_issues %}&show_issues=1{% endif %}">Previous</a>
+                            </li>
+                            {% endif %}
+                            
+                            <li class="page-item active">
+                                <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                            </li>
+                            
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if selected_property %}&property={{ selected_property }}{% endif %}{% if lhs_owned %}&lhs_owned=1{% endif %}{% if is_rental %}&is_rental=1{% endif %}{% if show_issues %}&show_issues=1{% endif %}">Next</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if selected_property %}&property={{ selected_property }}{% endif %}{% if lhs_owned %}&lhs_owned=1{% endif %}{% if is_rental %}&is_rental=1{% endif %}{% if show_issues %}&show_issues=1{% endif %}">Last</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

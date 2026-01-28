@@ -11,7 +11,9 @@ urlpatterns = [
     path('api-docs/', views.api_docs_view, name='api_docs'),
     path('resume/', views.resume_view, name='resume'),
     path('sankey/', views.sankey_view, name='sankey'),
-    path('accounts/', views.AccountListView.as_view(), name='account_list'),
-    path('transactions/', views.TransactionListView.as_view(), name='transaction_list'),
-    path('matches/', views.ReconciliationMatchListView.as_view(), name='match_list'),
+    
+    # Inventory URLs
+    path('inventory/metrics/', views.inventory_metrics_view, name='inventory_metrics'),
+    path('inventory/units/', views.InventoryUnitListView.as_view(), name='inventory_unit_list'),
+    path('inventory/commissions/', views.CommissionListView.as_view(), name='commission_list'),
 ]

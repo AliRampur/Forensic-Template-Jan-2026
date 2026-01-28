@@ -121,27 +121,29 @@
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
     <div class="card" style="text-align: center;">
-        <h3 style="color: #667eea; font-size: 2.5rem; margin-bottom: 0.5rem;">{{ total_accounts }}</h3>
-        <p style="color: #666;">Total Accounts</p>
-        <small style="color: #999;">{{ bank_accounts }} Bank | {{ book_accounts }} Book</small>
+        <h3 style="color: #667eea; font-size: 2.5rem; margin-bottom: 0.5rem;">{{ total_properties }}</h3>
+        <p style="color: #666;">Properties</p>
+        <small style="color: #999;">LHS Inventory Locations</small>
     </div>
     
     <div class="card" style="text-align: center;">
-        <h3 style="color: #667eea; font-size: 2.5rem; margin-bottom: 0.5rem;">{{ total_transactions }}</h3>
-        <p style="color: #666;">Total Transactions</p>
+        <h3 style="color: #667eea; font-size: 2.5rem; margin-bottom: 0.5rem;">{{ total_units }}</h3>
+        <p style="color: #666;">Inventory Units</p>
+        <small style="color: #999;">{{ lhs_owned }} LHS Owned | {{ lhs_rentals }} Rentals</small>
     </div>
     
     <div class="card" style="text-align: center;">
-        <h3 style="color: #667eea; font-size: 2.5rem; margin-bottom: 0.5rem;">{{ total_matches }}</h3>
-        <p style="color: #666;">Verified Matches</p>
+        <h3 style="color: #667eea; font-size: 2.5rem; margin-bottom: 0.5rem;">{{ total_commissions }}</h3>
+        <p style="color: #666;">Commission Records</p>
     </div>
 </div>
 
 <div class="card">
     <h2>🚀 Quick Actions</h2>
     <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
-        <a href="{% url 'forensics:sankey' %}" style="background: #667eea; color: white; padding: 0.75rem 1.5rem; border-radius: 4px; text-decoration: none;">View Sankey Diagram</a>
-        <a href="{% url 'forensics:transaction_list' %}" style="background: #764ba2; color: white; padding: 0.75rem 1.5rem; border-radius: 4px; text-decoration: none;">Browse Transactions</a>
+        <a href="{% url 'forensics:inventory_metrics' %}" style="background: #667eea; color: white; padding: 0.75rem 1.5rem; border-radius: 4px; text-decoration: none;">View Inventory Metrics</a>
+        <a href="{% url 'forensics:sankey' %}" style="background: #764ba2; color: white; padding: 0.75rem 1.5rem; border-radius: 4px; text-decoration: none;">View Money Flow</a>
+        <a href="{% url 'forensics:inventory_unit_list' %}" style="background: #52c41a; color: white; padding: 0.75rem 1.5rem; border-radius: 4px; text-decoration: none;">Browse Units</a>
     </div>
 </div>
 

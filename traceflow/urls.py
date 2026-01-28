@@ -3,10 +3,14 @@ URL configuration for TraceFlow project.
 """
 from django.contrib import admin
 from django.urls import path, include
-from forensics.api import api
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', api.urls),  # Django Ninja API
     path('', include('forensics.urls')),  # Forensics app URLs
 ]
+
+# Serve static files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,0 +1,211 @@
+{% extends 'forensics/base.html' %}
+{% load humanize %}
+{% load forensics_filters %}
+
+{% block title %}Commissions - TraceFlow{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">Commission Records</h1>
+            <p class="lead text-muted">Detailed commission tracking and verification status</p>
+        </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h6 class="card-subtitle mb-2 text-muted">Showing</h6>
+                    <h2 class="card-title text-primary">{{ total_count|intcomma }}</h2>
+                    <p class="small mb-0">Commission Records</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h6 class="card-subtitle mb-2 text-muted">Total Amount</h6>
+                    <h2 class="card-title text-success">${{ total_amount|floatformat:2|intcomma }}</h2>
+                    <p class="small mb-0">Filtered Results</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h6 class="card-subtitle mb-2 text-muted">Average</h6>
+                    <h2 class="card-title text-info">
+                        {% if total_count > 0 %}
+                            ${{ total_amount|div:total_count|floatformat:2|intcomma }}
+                        {% else %}
+                            $0.00
+                        {% endif %}
+                    </h2>
+                    <p class="small mb-0">Per Commission</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Filters</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-3">
+                            <label for="property" class="form-label">Property</label>
+                            <select name="property" id="property" class="form-select">
+                                <option value="">All Properties</option>
+                                {% for property in properties %}
+                                <option value="{{ property.id }}" {% if selected_property == property.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ property.full_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select name="status" id="status" class="form-select">
+                                <option value="">All Statuses</option>
+                                {% for value, label in statuses %}
+                                <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="recipient" class="form-label">Recipient</label>
+                            <input type="text" name="recipient" id="recipient" class="form-control" 
+                                   placeholder="Search recipient..." value="{{ selected_recipient }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label d-block">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary">Apply Filters</button>
+                            <a href="{% url 'forensics:commission_list' %}" class="btn btn-secondary">Clear</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Commissions Table -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Commissions ({{ page_obj.paginator.count|intcomma }} total)</h5>
+                    <a href="{% url 'forensics:inventory_metrics' %}" class="btn btn-sm btn-light">Back to Metrics</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Unit</th>
+                                    <th>Property</th>
+                                    <th>Recipient</th>
+                                    <th class="text-end">Amount</th>
+                                    <th class="text-end">% of Sale</th>
+                                    <th class="text-center">Status</th>
+                                    <th>Memo/Invoice</th>
+                                    <th>Comments</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for commission in commissions %}
+                                <tr>
+                                    <td><strong>{{ commission.unit.unit_number }}</strong><br>
+                                        <small class="text-muted">{{ commission.unit.property_unit }}</small>
+                                    </td>
+                                    <td>{{ commission.unit.property.short_name }}</td>
+                                    <td>{{ commission.recipient }}</td>
+                                    <td class="text-end">
+                                        <strong>${{ commission.amount|floatformat:2|intcomma }}</strong>
+                                    </td>
+                                    <td class="text-end">
+                                        {% if commission.percentage_of_sales %}
+                                            {{ commission.percentage_of_sales }}%
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if commission.status == 'SUPPORTED' %}
+                                            <span class="badge bg-success">Supported</span>
+                                        {% elif commission.status == 'UNSUPPORTED' %}
+                                            <span class="badge bg-danger">Unsupported</span>
+                                        {% elif commission.status == 'INSUFFICIENT' %}
+                                            <span class="badge bg-warning text-dark">Insufficient</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ commission.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if commission.memo %}
+                                            <small>{{ commission.memo|truncatewords:5 }}</small>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if commission.comments %}
+                                            <small>{{ commission.comments|truncatewords:5 }}</small>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted py-4">No commissions found matching the filters.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                {% if is_paginated %}
+                <div class="card-footer">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center mb-0">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if selected_property %}&property={{ selected_property }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_recipient %}&recipient={{ selected_recipient }}{% endif %}">First</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if selected_property %}&property={{ selected_property }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_recipient %}&recipient={{ selected_recipient }}{% endif %}">Previous</a>
+                            </li>
+                            {% endif %}
+                            
+                            <li class="page-item active">
+                                <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                            </li>
+                            
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if selected_property %}&property={{ selected_property }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_recipient %}&recipient={{ selected_recipient }}{% endif %}">Next</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if selected_property %}&property={{ selected_property }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_recipient %}&recipient={{ selected_recipient }}{% endif %}">Last</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

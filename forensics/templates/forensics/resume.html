@@ -1,12 +1,20 @@
 {% extends 'forensics/base.html' %}
+{% load static %}
 
 {% block title %}Resume — {{ expert_name }}{% endblock %}
 
 {% block content %}
-<div class="card">
-  <h1 style="margin-bottom: 0.25rem;">{{ expert_name }}</h1>
-  <p style="color: #666; margin-bottom: 1rem;">{{ expert_title }}</p>
-  <p><a href="{{ linkedin_url }}" target="_blank" rel="noopener">View LinkedIn Profile</a></p>
+<div class="card" style="padding: 0; overflow: hidden;">
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem;">
+    <div style="flex: 1;">
+      <h1 style="color: white; margin-bottom: 0.5rem; font-size: 2rem;">{{ expert_name }}</h1>
+      <p style="opacity: 0.95; margin-bottom: 1rem; font-size: 1.1rem;">{{ expert_title }}</p>
+      <a href="{{ linkedin_url }}" target="_blank" rel="noopener" style="color: #ffe082; text-decoration: none; font-weight: 500;">→ View LinkedIn Profile</a>
+    </div>
+    <div style="flex-shrink: 0;">
+      <img src="{% static 'forensics/images/ali-headshot.jpg' %}" alt="{{ expert_name }}" style="width: 140px; height: 140px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.9); object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+    </div>
+  </div>
 </div>
 
 <div class="card">

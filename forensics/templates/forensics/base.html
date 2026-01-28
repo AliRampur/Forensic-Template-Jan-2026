@@ -34,6 +34,16 @@
         nav h1 {
             color: white;
             font-size: 1.5rem;
+            margin: 0;
+        }
+        
+        nav h1 a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        nav h1 a:hover {
+            opacity: 0.8;
         }
         
         nav ul {
@@ -75,13 +85,13 @@
 <body>
     <nav>
         <div class="container">
-            <h1>🔍 TraceFlow</h1>
+            <h1><a href="{% url 'forensics:home' %}">🔍 TraceFlow</a></h1>
             <ul>
                 <li><a href="{% url 'forensics:home' %}">Dashboard</a></li>
                 <li><a href="{% url 'forensics:sankey' %}">Sankey View</a></li>
-                <li><a href="{% url 'forensics:account_list' %}">Accounts</a></li>
-                <li><a href="{% url 'forensics:transaction_list' %}">Transactions</a></li>
-                <li><a href="{% url 'forensics:match_list' %}">Matches</a></li>
+                <li><a href="{% url 'forensics:inventory_metrics' %}">Inventory</a></li>
+                <li><a href="{% url 'forensics:inventory_unit_list' %}">Units</a></li>
+                <li><a href="{% url 'forensics:commission_list' %}">Commissions</a></li>
                 <li><a href="{% url 'forensics:resume' %}">Resume</a></li>
             </ul>
         </div>
