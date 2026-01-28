@@ -3,8 +3,6 @@
 # Cloud Run Entrypoint Script for TraceFlow
 # This script runs on Cloud Run startup to prepare the application
 
-set -e
-
 echo "=== TraceFlow Cloud Run Initialization ==="
 
 # Check required environment variables
@@ -19,11 +17,24 @@ echo "Starting Django application..."
 
 # Collect static files
 echo "Collecting static files..."
-python manage.py collectstatic --noinput --clear
+python manage.py collectstatic --noinput --clear || true
 
-# Run database migrations
+# Run database migrations with timeout and retry
 echo "Running database migrations..."
-python manage.py migrate --noinput
+for i in {1..5}; do
+    echo "Migration attempt $i..."
+    if python manage.py migrate --noinput; then
+        echo "Migrations completed successfully"
+        break
+    else
+        if [ $i -lt 5 ]; then
+            echo "Migration failed, waiting 10 seconds before retry..."
+            sleep 10
+        else
+            echo "Migration failed after 5 attempts, continuing anyway..."
+        fi
+    fi
+done
 
 # Create superuser if it doesn't exist (optional)
 # echo "Creating default superuser..."
