@@ -317,56 +317,44 @@
 
 <div class="container-fluid mt-4">
     <!-- Hero Header -->
-    <div class="inventory-header text-center">
+    <div class="inventory-header">
         <div class="container">
-            <h1 class="display-3">🏠 LHS Inventory</h1>
-            <p>Property inventory and unit management system</p>
-        </div>
-    </div>
-
-    <!-- Summary Card -->
-    <div class="row mb-4">
-        <div class="col-md-4 offset-md-4">
-            <div class="summary-card modern-card">
-                <div class="card-body text-center">
-                    <h6 class="card-subtitle mb-2">Total Units</h6>
-                    <h2 class="card-title">{{ total_units|intcomma }}</h2>
-                    <p class="mb-0">Across {{ total_properties }} Properties</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="display-3" style="margin: 0; color: white; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">🏠 LHS Inventory</h1>
+                    <p style="color: rgba(255,255,255,0.9); font-size: 1.1rem; margin: 0.5rem 0 0 0;">Property inventory and unit management system</p>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Property List with Unit Counts -->
-    <div class="row mb-4">
-        <div class="col-lg-10 offset-lg-1">
-            <div class="modern-card property-card">
-                <div class="card-header text-white">
-                    <h5 class="mb-0">📊 Units by Property</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Property</th>
-                                    <th class="text-end">Unit Count</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for stat in property_stats %}
-                                <tr>
-                                    <td><strong>{{ stat.property.full_name }}</strong> <span class="text-muted">({{ stat.property.short_name }})</span></td>
-                                    <td class="text-end"><span class="badge bg-primary" style="font-size: 1rem; padding: 0.5rem 1.2rem;">{{ stat.unit_count|intcomma }}</span></td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                <div style="flex-basis: 300px;">
+                    <div class="summary-card modern-card" style="margin: 0;">
+                        <div class="card-body text-center">
+                            <h6 class="card-subtitle mb-2">Total Units</h6>
+                            <h2 class="card-title">{{ total_units|intcomma }}</h2>
+                            <p class="mb-0">Across {{ total_properties }} Properties</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Bar Chart -->
+    <div class="row mb-4">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="modern-card" style="background: white; border-radius: 20px; padding: 2rem;">
+                <div id="propertyChart" style="width: 100%; height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var data = {{ chart_json|safe }};
+            var layout = data.layout;
+            layout.height = 400;
+            Plotly.newPlot('propertyChart', data.data, layout, {responsive: true});
+        });
+    </script>
 
     <!-- Filters Section -->
     <div class="row mb-4">
@@ -436,8 +424,8 @@
                             </div>
                         </div>
                         
-                        <div class="col-md-12 text-end mt-4">
-                            <a href="{% url 'forensics:inventory_metrics' %}" class="btn btn-lg" style="background: linear-gradient(135deg, #718096 0%, #4a5568 100%); color: white; border: none; border-radius: 12px; padding: 0.8rem 2.5rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3);">
+                        <div class="col-md-12" style="display: flex; justify-content: flex-end; margin-top: 2rem;">
+                            <a href="{% url 'forensics:inventory_metrics' %}" class="btn btn-lg" style="background: linear-gradient(135deg, #718096 0%, #4a5568 100%); color: white; border: none; border-radius: 12px; padding: 0.8rem 2.5rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3); text-decoration: none;">
                                 Clear Filters
                             </a>
                         </div>
@@ -447,13 +435,12 @@
         </div>
     </div>
 
-    <!-- Filtered Results Table -->
-    {% if filters_active %}
+    <!-- Results Table -->
     <div class="row mb-4">
         <div class="col-md-12">
             <div class="modern-card results-card">
                 <div class="card-header text-white">
-                    <h5 class="mb-0">✨ Filtered Results ({{ filtered_units.count|intcomma }} units)</h5>
+                    <h5 class="mb-0">{% if filters_active %}✨ Filtered Results{% else %}📋 All Units{% endif %} ({{ filtered_units.count|intcomma }} units)</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -513,11 +500,72 @@
                             </tbody>
                         </table>
                     </div>
+                    
+                    <!-- Pagination -->
+                    {% if page_obj.has_other_pages %}
+                    <nav aria-label="Page navigation" style="padding: 2rem; border-top: 1px solid #e2e8f0;">
+                        <ul class="pagination justify-content-center mb-0">
+                            <!-- Previous Page -->
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">&laquo;&laquo;</span>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">&laquo;</span>
+                            </li>
+                            {% endif %}
+                            
+                            <!-- Page Numbers -->
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }} <span class="visually-hidden">(current)</span></span>
+                                </li>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            <!-- Next Page -->
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">&raquo;</span>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">&raquo;&raquo;</span>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
-    {% endif %}
 
 </div>
 

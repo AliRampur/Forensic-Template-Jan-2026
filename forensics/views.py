@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.generic import ListView, DetailView
 from django.db.models import Sum, Count, Avg, Q
+from django.core.paginator import Paginator
 import plotly.graph_objects as go
 
 from .inventory_models import Property, InventoryUnit, Commission
@@ -183,6 +184,9 @@ def inventory_metrics_view(request):
             'unit_count': unique_base_units
         })
     
+    # Sort by unit count in descending order
+    property_stats.sort(key=lambda x: x['unit_count'], reverse=True)
+    
     # Handle filtering
     queryset = InventoryUnit.objects.all().select_related('property')
     
@@ -228,15 +232,59 @@ def inventory_metrics_view(request):
     # Determine if filters are active
     filters_active = any([base_property, unit_lot, lhs_property, builder, mco_owner, serial_number])
     
+    # Always show units (filtered if filters are active, otherwise all)
+    units_to_display = filtered_units
+    
+    # Add pagination
+    paginator = Paginator(units_to_display, 25)  # Show 25 units per page
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    
+    # Create bar chart for property units
+    property_names = [stat['property'].short_name for stat in property_stats]
+    unit_counts = [stat['unit_count'] for stat in property_stats]
+    
+    fig = go.Figure(data=[
+        go.Bar(
+            x=property_names,
+            y=unit_counts,
+            marker=dict(
+                color='#667eea',
+                line=dict(color='#764ba2', width=2)
+            ),
+            text=unit_counts,
+            textposition='auto',
+            hovertemplate='<b>%{x}</b><br>Units: %{y:,}<extra></extra>'
+        )
+    ])
+    
+    fig.update_layout(
+        title='Property Unit Count Distribution',
+        xaxis_title='Property',
+        yaxis_title='Number of Units',
+        hovermode='x unified',
+        plot_bgcolor='rgba(240, 243, 250, 0.5)',
+        paper_bgcolor='white',
+        font=dict(size=12, family='Arial, sans-serif'),
+        height=400,
+        margin=dict(l=60, r=30, t=60, b=60),
+        showlegend=False
+    )
+    
+    chart_json = fig.to_json()
+    
     context = {
         'total_units': total_units,
         'total_properties': total_properties,
         'property_stats': property_stats,
-        'filtered_units': filtered_units if filters_active else None,
+        'filtered_units': page_obj,
+        'page_obj': page_obj,
+        'paginator': paginator,
         'filters_active': filters_active,
         'properties': properties,
         'builders': builders,
         'mco_owners': mco_owners,
+        'chart_json': chart_json,
         # Filter values for preserving state
         'selected_base_property': base_property or '',
         'selected_unit_lot': unit_lot or '',
