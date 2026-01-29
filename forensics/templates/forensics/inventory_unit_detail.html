@@ -1,0 +1,301 @@
+{% extends 'forensics/base.html' %}
+{% load humanize %}
+
+{% block title %}{{ unit.property_unit }} - TraceFlow{% endblock %}
+
+{% block content %}
+<style>
+    .detail-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2.5rem 0;
+        margin: -2rem -2rem 2rem -2rem;
+        border-radius: 0 0 30px 30px;
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+    }
+    
+    .detail-header h1 {
+        color: white;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .detail-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+    
+    .detail-card .card-header {
+        background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+        color: white;
+        padding: 1.5rem;
+        border: none;
+    }
+    
+    .info-row {
+        padding: 1.2rem;
+        border-bottom: 1px solid #e2e8f0;
+        transition: background 0.3s ease;
+    }
+    
+    .info-row:hover {
+        background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    }
+    
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: #2d3748;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .info-value {
+        font-size: 1.1rem;
+        color: #1a202c;
+        font-weight: 500;
+    }
+    
+    .pdf-placeholder {
+        background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        border: 3px dashed #cbd5e0;
+        border-radius: 20px;
+        padding: 4rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .pdf-placeholder:hover {
+        border-color: #667eea;
+        background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+    }
+    
+    .pdf-icon {
+        font-size: 5rem;
+        color: #cbd5e0;
+        margin-bottom: 1rem;
+    }
+    
+    .back-button {
+        background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 0.7rem 1.8rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3);
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .back-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(74, 85, 104, 0.4);
+        color: white;
+    }
+    
+    .commission-table {
+        font-size: 0.95rem;
+    }
+    
+    .commission-table thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .commission-table thead th {
+        color: white;
+        border: none;
+        padding: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .commission-table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .commission-table tbody tr:hover {
+        background: linear-gradient(90deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+        transform: translateX(5px);
+    }
+    
+    .badge-custom {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+</style>
+
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="detail-header text-center">
+        <div class="container">
+            <h1>🏠 Unit Details</h1>
+            <p class="text-white mb-0">{{ unit.property_unit }}</p>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="row mb-4">
+        <div class="col">
+            <a href="{% url 'forensics:inventory_metrics' %}" class="back-button">
+                ← Back to Inventory
+            </a>
+        </div>
+    </div>
+
+    <!-- Unit Information -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="detail-card">
+                <div class="card-header">
+                    <h5 class="mb-0">💰 Sale Information</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="info-row">
+                        <div class="info-label">Sale Amount</div>
+                        <div class="info-value">
+                            {% if unit.sale_amount_pre_tax %}
+                                <span style="color: #48bb78; font-size: 1.5rem; font-weight: 700;">
+                                    ${{ unit.sale_amount_pre_tax|floatformat:2|intcomma }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted">Not Available</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Sale Deposited To</div>
+                        <div class="info-value">
+                            {{ unit.sale_deposited_to|default:"Not Specified" }}
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Date</div>
+                        <div class="info-value">
+                            {% if unit.builder_invoice_date %}
+                                {{ unit.builder_invoice_date|date:"F d, Y" }}
+                            {% else %}
+                                <span class="text-muted">Not Available</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Commissions Card -->
+            <div class="detail-card">
+                <div class="card-header">
+                    <h5 class="mb-0">💵 Commissions & Billing</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if commissions %}
+                        <div class="table-responsive">
+                            <table class="table commission-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Billed To</th>
+                                        <th>Amount</th>
+                                        <th>Memo / Invoice</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for commission in commissions %}
+                                    <tr>
+                                        <td><strong>{{ commission.recipient }}</strong></td>
+                                        <td>
+                                            <span style="color: #48bb78; font-weight: 600;">
+                                                ${{ commission.amount|floatformat:2|intcomma }}
+                                            </span>
+                                        </td>
+                                        <td>{{ commission.memo|default:"—" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="info-row text-center">
+                            <p class="text-muted mb-0">No commissions recorded for this unit</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="detail-card">
+                <div class="card-header">
+                    <h5 class="mb-0">📋 Additional Details</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="info-row">
+                        <div class="info-label">Use of LHS Funds</div>
+                        <div class="info-value">
+                            {{ unit.observations|default:"No information available" }}
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Description</div>
+                        <div class="info-value">
+                            <strong>Property:</strong> {{ unit.property.full_name }}<br>
+                            <strong>Unit/Lot:</strong> {{ unit.unit_number }}<br>
+                            <strong>Builder:</strong> {{ unit.builder|default:"Not Specified" }}<br>
+                            <strong>Serial Number:</strong> {{ unit.serial_number|default:"Not Specified" }}
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Current Status</div>
+                        <div class="info-value">
+                            {% if unit.current_lhs_property %}
+                                <span class="badge badge-custom" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white;">
+                                    LHS Property
+                                </span>
+                            {% endif %}
+                            {% if unit.is_lhs_rental %}
+                                <span class="badge badge-custom" style="background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%); color: white;">
+                                    LHS Rental
+                                </span>
+                            {% endif %}
+                            {% if unit.current_occupant %}
+                                <br><strong class="mt-2 d-inline-block">Occupant:</strong> {{ unit.current_occupant }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF Placeholder -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="detail-card">
+                <div class="card-header">
+                    <h5 class="mb-0">📄 Documents</h5>
+                </div>
+                <div class="card-body">
+                    <div class="pdf-placeholder">
+                        <div class="pdf-icon">📄</div>
+                        <h4 style="color: #4a5568; font-weight: 600;">PDF Document Viewer</h4>
+                        <p class="text-muted mb-0">PDF documents related to this unit will appear here</p>
+                        <small class="text-muted">Supported formats: PDF, Images</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

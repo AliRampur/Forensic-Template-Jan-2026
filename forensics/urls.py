@@ -15,5 +15,9 @@ urlpatterns = [
     # Inventory URLs
     path('inventory/metrics/', views.inventory_metrics_view, name='inventory_metrics'),
     path('inventory/units/', views.InventoryUnitListView.as_view(), name='inventory_unit_list'),
+    path('inventory/units/<int:pk>/', views.inventory_unit_detail_view, name='inventory_unit_detail'),
     path('inventory/commissions/', views.CommissionListView.as_view(), name='commission_list'),
+    
+    # Document URLs
+    path('documents/', views.document_inventory_view, name='document_inventory'),
 ]

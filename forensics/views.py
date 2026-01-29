@@ -165,78 +165,207 @@ def sankey_view(request):
 
 # Inventory Views
 def inventory_metrics_view(request):
-    """Overall inventory metrics and forensic indicators."""
+    """Overall inventory metrics showing units by property with filtering."""
     
     # Basic counts
     total_units = InventoryUnit.objects.count()
     total_properties = Property.objects.count()
-    total_commissions = Commission.objects.count()
     
-    # Financial metrics
-    total_bank_balance = InventoryUnit.objects.aggregate(
-        total=Sum('bank_gl_balance')
-    )['total'] or 0
+    # Property breakdown with unique base_unit counts
+    property_stats = []
+    for property_obj in Property.objects.all().order_by('short_name'):
+        unique_base_units = InventoryUnit.objects.filter(
+            property=property_obj
+        ).values('base_unit').distinct().count()
+        
+        property_stats.append({
+            'property': property_obj,
+            'unit_count': unique_base_units
+        })
     
-    total_sales = InventoryUnit.objects.aggregate(
-        total=Sum('sale_amount_pre_tax')
-    )['total'] or 0
+    # Handle filtering
+    queryset = InventoryUnit.objects.all().select_related('property')
     
-    total_commission_amount = Commission.objects.aggregate(
-        total=Sum('amount')
-    )['total'] or 0
+    # Get filter parameters
+    base_property = request.GET.get('base_property')
+    unit_lot = request.GET.get('unit_lot')
+    lhs_property = request.GET.get('lhs_property')
+    builder = request.GET.get('builder')
+    mco_owner = request.GET.get('mco_owner')
+    serial_number = request.GET.get('serial_number')
     
-    total_rental_income = InventoryUnit.objects.aggregate(
-        total=Sum('gl_rental_income')
-    )['total'] or 0
+    # Apply filters
+    if base_property:
+        queryset = queryset.filter(property_id=base_property)
     
-    # LHS-specific metrics
-    lhs_owned = InventoryUnit.objects.filter(current_lhs_property=True).count()
-    lhs_rentals = InventoryUnit.objects.filter(is_lhs_rental=True).count()
+    if unit_lot:
+        queryset = queryset.filter(
+            Q(unit_number__icontains=unit_lot) |
+            Q(property_unit__icontains=unit_lot) |
+            Q(base_unit__icontains=unit_lot)
+        )
     
-    # Forensic flags
-    mco_mismatches = InventoryUnit.objects.filter(mco_not_match=True).count()
-    no_mco_available = InventoryUnit.objects.filter(no_mco_available=True).count()
-    commission_no_sale = InventoryUnit.objects.filter(commission_but_no_sale=True).count()
-    home_sale_entity_mco = InventoryUnit.objects.filter(
-        mco_indicates_home_sale_entity=True
-    ).count()
+    if lhs_property:
+        queryset = queryset.filter(current_lhs_property=True)
     
-    # Property breakdown
-    property_stats = Property.objects.annotate(
-        unit_count=Count('units'),
-        total_balance=Sum('units__bank_gl_balance'),
-        total_sales=Sum('units__sale_amount_pre_tax'),
-        commission_count=Count('units__commissions')
-    ).order_by('-unit_count')
+    if builder:
+        queryset = queryset.filter(builder__icontains=builder)
     
-    # Commission breakdown
-    unsupported_commissions = Commission.objects.filter(
-        status='UNSUPPORTED'
-    ).aggregate(
-        count=Count('id'),
-        total=Sum('amount')
-    )
+    if mco_owner:
+        queryset = queryset.filter(mco_owner__icontains=mco_owner)
+    
+    if serial_number:
+        queryset = queryset.filter(serial_number__icontains=serial_number)
+    
+    # Order results
+    filtered_units = queryset.order_by('property', 'unit_number')
+    
+    # Get unique values for dropdowns
+    properties = Property.objects.all().order_by('short_name')
+    builders = InventoryUnit.objects.exclude(builder='').values_list('builder', flat=True).distinct().order_by('builder')
+    mco_owners = InventoryUnit.objects.exclude(mco_owner='').values_list('mco_owner', flat=True).distinct().order_by('mco_owner')
+    
+    # Determine if filters are active
+    filters_active = any([base_property, unit_lot, lhs_property, builder, mco_owner, serial_number])
     
     context = {
         'total_units': total_units,
         'total_properties': total_properties,
-        'total_commissions': total_commissions,
-        'total_bank_balance': total_bank_balance,
-        'total_sales': total_sales,
-        'total_commission_amount': total_commission_amount,
-        'total_rental_income': total_rental_income,
-        'lhs_owned': lhs_owned,
-        'lhs_rentals': lhs_rentals,
-        'mco_mismatches': mco_mismatches,
-        'no_mco_available': no_mco_available,
-        'commission_no_sale': commission_no_sale,
-        'home_sale_entity_mco': home_sale_entity_mco,
         'property_stats': property_stats,
-        'unsupported_commissions_count': unsupported_commissions['count'] or 0,
-        'unsupported_commissions_total': unsupported_commissions['total'] or 0,
+        'filtered_units': filtered_units if filters_active else None,
+        'filters_active': filters_active,
+        'properties': properties,
+        'builders': builders,
+        'mco_owners': mco_owners,
+        # Filter values for preserving state
+        'selected_base_property': base_property or '',
+        'selected_unit_lot': unit_lot or '',
+        'selected_lhs_property': lhs_property or '',
+        'selected_builder': builder or '',
+        'selected_mco_owner': mco_owner or '',
+        'selected_serial_number': serial_number or '',
     }
     
     return render(request, 'forensics/inventory_metrics.html', context)
+
+
+def inventory_unit_detail_view(request, pk):
+    """Detail view for a specific inventory unit."""
+    from django.shortcuts import get_object_or_404
+    
+    unit = get_object_or_404(InventoryUnit.objects.select_related('property'), pk=pk)
+    commissions = unit.commissions.all()
+    
+    context = {
+        'unit': unit,
+        'commissions': commissions,
+    }
+    
+    return render(request, 'forensics/inventory_unit_detail.html', context)
+
+
+def document_inventory_view(request):
+    """Document inventory and retrieval page."""
+    from django.db.models import Q
+    from .inventory_models import Document
+    
+    # Get filter parameters
+    doc_type = request.GET.get('doc_type', '')
+    property_id = request.GET.get('property', '')
+    
+    # Get all properties
+    properties = Property.objects.all().order_by('short_name')
+    
+    # Initialize queryset
+    documents = Document.objects.all().select_related('property')
+    
+    # Apply document type filter
+    if doc_type:
+        documents = documents.filter(document_type=doc_type)
+    
+    # Apply property filter
+    if property_id:
+        documents = documents.filter(property_id=property_id)
+    
+    # Apply additional filters based on document type
+    if doc_type == 'TAX':
+        tax_year = request.GET.get('tax_year')
+        if tax_year:
+            documents = documents.filter(tax_year=tax_year)
+        
+        # Get unique tax years for the dropdown
+        tax_years = sorted(
+            set(Document.objects.filter(document_type='TAX')
+                .exclude(tax_year__isnull=True)
+                .values_list('tax_year', flat=True)),
+            reverse=True
+        )
+        context_extra = {'tax_years': tax_years}
+    
+    elif doc_type == 'BANK':
+        bank_year = request.GET.get('bank_year')
+        bank_month = request.GET.get('bank_month')
+        bank_name = request.GET.get('bank_name')
+        
+        if bank_year:
+            documents = documents.filter(statement_year=bank_year)
+        if bank_month:
+            documents = documents.filter(statement_month=bank_month)
+        if bank_name:
+            documents = documents.filter(bank_name__icontains=bank_name)
+        
+        bank_years = sorted(
+            set(Document.objects.filter(document_type='BANK')
+                .exclude(statement_year__isnull=True)
+                .values_list('statement_year', flat=True)),
+            reverse=True
+        )
+        bank_names = Document.objects.filter(document_type='BANK').exclude(bank_name='').values_list('bank_name', flat=True).distinct().order_by('bank_name')
+        
+        context_extra = {
+            'bank_years': bank_years,
+            'bank_names': bank_names,
+            'months': [(i, f"{i:02d} - {'January,February,March,April,May,June,July,August,September,October,November,December'.split(',')[i-1]}") for i in range(1, 13)],
+        }
+    
+    elif doc_type == 'INVOICE':
+        invoice_year = request.GET.get('invoice_year')
+        vendor_name = request.GET.get('vendor_name')
+        
+        if invoice_year:
+            documents = documents.filter(invoice_year=invoice_year)
+        if vendor_name:
+            documents = documents.filter(vendor_name__icontains=vendor_name)
+        
+        invoice_years = sorted(
+            set(Document.objects.filter(document_type='INVOICE')
+                .exclude(invoice_year__isnull=True)
+                .values_list('invoice_year', flat=True)),
+            reverse=True
+        )
+        vendors = Document.objects.filter(document_type='INVOICE').exclude(vendor_name='').values_list('vendor_name', flat=True).distinct().order_by('vendor_name')
+        
+        context_extra = {
+            'invoice_years': invoice_years,
+            'vendors': vendors,
+        }
+    else:
+        context_extra = {}
+    
+    # Determine if filters are active
+    filters_active = bool(doc_type)
+    
+    context = {
+        'doc_type': doc_type,
+        'properties': properties,
+        'documents': documents if filters_active else None,
+        'filters_active': filters_active,
+        'doc_types': Document.DOC_TYPE_CHOICES,
+        'selected_property': property_id or '',
+        **context_extra,
+    }
+    
+    return render(request, 'forensics/document_inventory.html', context)
 
 
 class InventoryUnitListView(ListView):

@@ -267,3 +267,130 @@ class Commission(models.Model):
     
     def __str__(self):
         return f"{self.unit.property_unit} - {self.recipient}: ${self.amount}"
+
+
+class Document(models.Model):
+    """Tracks documents for forensic analysis (taxes, bank statements, invoices, etc.)."""
+    
+    DOC_TYPE_CHOICES = [
+        ('TAX', 'Tax Return'),
+        ('BANK', 'Bank Statement'),
+        ('INVOICE', 'Invoice'),
+    ]
+    
+    # Basic Info
+    document_type = models.CharField(
+        max_length=50,
+        choices=DOC_TYPE_CHOICES,
+        help_text="Type of document"
+    )
+    property = models.ForeignKey(
+        Property,
+        on_delete=models.CASCADE,
+        related_name='documents',
+        null=True,
+        blank=True,
+        help_text="Related property"
+    )
+    
+    # Document Details
+    title = models.CharField(max_length=255, help_text="Document title")
+    description = models.TextField(blank=True, help_text="Document description")
+    
+    # Tax-specific fields
+    tax_year = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text="Tax year (for tax documents)"
+    )
+    tax_type = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Type of tax return (e.g., 1040, 1120, K-1)"
+    )
+    
+    # Bank Statement-specific fields
+    statement_year = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text="Year (for bank statements)"
+    )
+    statement_month = models.IntegerField(
+        null=True,
+        blank=True,
+        choices=[(i, f"{i:02d}") for i in range(1, 13)],
+        help_text="Month (1-12)"
+    )
+    bank_name = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Bank name"
+    )
+    account_number = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Bank account number (partially masked)"
+    )
+    
+    # Invoice-specific fields
+    invoice_number = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Invoice number"
+    )
+    vendor_name = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Vendor/Supplier name"
+    )
+    invoice_date = models.DateField(
+        null=True,
+        blank=True,
+        help_text="Invoice date"
+    )
+    invoice_year = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text="Year (for filtering)"
+    )
+    
+    # Document Storage
+    file_name = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Original file name"
+    )
+    file_path = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Path to document file"
+    )
+    file_size_mb = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="File size in MB"
+    )
+    
+    # Metadata
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    uploaded_by = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="User who uploaded the document"
+    )
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Document'
+        verbose_name_plural = 'Documents'
+        indexes = [
+            models.Index(fields=['document_type', 'property']),
+            models.Index(fields=['tax_year']),
+            models.Index(fields=['statement_year', 'statement_month']),
+        ]
+    
+    def __str__(self):
+        return f"{self.get_document_type_display()} - {self.title}"

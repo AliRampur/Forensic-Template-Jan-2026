@@ -1,0 +1,444 @@
+{% extends 'forensics/base.html' %}
+{% load humanize %}
+
+{% block title %}Document Inventory - TraceFlow{% endblock %}
+
+{% block content %}
+<style>
+    .doc-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 3rem 0;
+        margin: -2rem -2rem 2rem -2rem;
+        border-radius: 0 0 30px 30px;
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        animation: slideDown 0.6s ease-out;
+    }
+    
+    .doc-header h1 {
+        color: white;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        margin: 0;
+    }
+    
+    .doc-header p {
+        color: rgba(255,255,255,0.9);
+        font-size: 1.1rem;
+        margin: 0.5rem 0 0 0;
+    }
+    
+    .modern-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .modern-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+    }
+    
+    .filter-card {
+        background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%);
+        border: 2px solid #e2e8f0;
+        animation: fadeInUp 0.8s ease-out;
+    }
+    
+    .filter-card .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 1.5rem;
+        border-radius: 18px 18px 0 0 !important;
+    }
+    
+    .filter-card .card-header h5 {
+        color: white;
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    .filter-card .card-body {
+        padding: 2rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .form-select, .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .form-select:focus, .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .doc-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .doc-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .doc-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .doc-icon {
+        padding: 2rem;
+        text-align: center;
+        font-size: 4rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .doc-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .doc-type {
+        display: inline-block;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        width: fit-content;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .doc-type.tax {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+    }
+    
+    .doc-type.bank {
+        background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+        color: white;
+    }
+    
+    .doc-type.invoice {
+        background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        color: white;
+    }
+    
+    .doc-title {
+        font-weight: 600;
+        color: #2d3748;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        flex-grow: 1;
+    }
+    
+    .doc-meta {
+        font-size: 0.85rem;
+        color: #718096;
+        margin-bottom: 0.3rem;
+    }
+    
+    .doc-meta strong {
+        color: #2d3748;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+    
+    .empty-state-icon {
+        font-size: 5rem;
+        opacity: 0.3;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+        color: #718096;
+        font-size: 1.1rem;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="doc-header text-center">
+        <div class="container">
+            <h1 class="display-3">📁 Document Inventory</h1>
+            <p>Access tax returns, bank statements, invoices, and more</p>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="modern-card filter-card">
+                <div class="card-header">
+                    <h5 class="mb-0">🔍 Find Documents</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" id="filterForm" class="row g-3">
+                        <!-- Document Type -->
+                        <div class="col-md-3">
+                            <label for="doc_type" class="form-label">Document Type</label>
+                            <select name="doc_type" id="doc_type" class="form-select">
+                                <option value="">Select Document Type</option>
+                                {% for value, label in doc_types %}
+                                <option value="{{ value }}" {% if doc_type == value %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Property -->
+                        <div class="col-md-3">
+                            <label for="property" class="form-label">Property</label>
+                            <select name="property" id="property" class="form-select">
+                                <option value="">All Properties</option>
+                                {% for prop in properties %}
+                                <option value="{{ prop.id }}" {% if selected_property == prop.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ prop.full_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Tax-specific filters -->
+                        {% if doc_type == 'TAX' %}
+                        <div class="col-md-3">
+                            <label for="tax_year" class="form-label">Tax Year</label>
+                            <select name="tax_year" id="tax_year" class="form-select">
+                                <option value="">All Years</option>
+                                {% for year in tax_years %}
+                                <option value="{{ year }}" {% if request.GET.tax_year == year|stringformat:"s" %}selected{% endif %}>
+                                    {{ year }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+
+                        <!-- Bank Statement-specific filters -->
+                        {% if doc_type == 'BANK' %}
+                        <div class="col-md-2">
+                            <label for="bank_year" class="form-label">Year</label>
+                            <select name="bank_year" id="bank_year" class="form-select">
+                                <option value="">All Years</option>
+                                {% for year in bank_years %}
+                                <option value="{{ year }}" {% if request.GET.bank_year == year|stringformat:"s" %}selected{% endif %}>
+                                    {{ year }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="bank_month" class="form-label">Month</label>
+                            <select name="bank_month" id="bank_month" class="form-select">
+                                <option value="">All Months</option>
+                                {% for month_num, month_label in months %}
+                                <option value="{{ month_num }}" {% if request.GET.bank_month == month_num|stringformat:"s" %}selected{% endif %}>
+                                    {{ month_label }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="bank_name" class="form-label">Bank</label>
+                            <select name="bank_name" id="bank_name" class="form-select">
+                                <option value="">All Banks</option>
+                                {% for bank in bank_names %}
+                                <option value="{{ bank }}" {% if request.GET.bank_name == bank %}selected{% endif %}>
+                                    {{ bank }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+
+                        <!-- Invoice-specific filters -->
+                        {% if doc_type == 'INVOICE' %}
+                        <div class="col-md-2">
+                            <label for="invoice_year" class="form-label">Year</label>
+                            <select name="invoice_year" id="invoice_year" class="form-select">
+                                <option value="">All Years</option>
+                                {% for year in invoice_years %}
+                                <option value="{{ year }}" {% if request.GET.invoice_year == year|stringformat:"s" %}selected{% endif %}>
+                                    {{ year }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="vendor_name" class="form-label">Vendor</label>
+                            <select name="vendor_name" id="vendor_name" class="form-select">
+                                <option value="">All Vendors</option>
+                                {% for vendor in vendors %}
+                                <option value="{{ vendor }}" {% if request.GET.vendor_name == vendor %}selected{% endif %}>
+                                    {{ vendor }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+
+                        <div class="col-12 ms-auto" style="display: flex; justify-content: flex-end;">
+                            <a href="{% url 'forensics:document_inventory' %}" class="btn btn-lg" style="background: linear-gradient(135deg, #718096 0%, #4a5568 100%); color: white; border: none; border-radius: 12px; padding: 0.8rem 2.5rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3); text-decoration: none;">
+                                Clear Filters
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results -->
+    {% if filters_active %}
+    <div class="row">
+        <div class="col-12">
+            {% if documents %}
+            <div class="modern-card">
+                <div class="card-header" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); padding: 1.5rem; border: none;">
+                    <h5 class="mb-0 text-white">✨ {{ documents.count|intcomma }} Document{{ documents.count|pluralize }} Found</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="doc-grid">
+                        {% for doc in documents %}
+                        <div class="doc-card" onclick="alert('Document: {{ doc.title }}\n\nClick to view document details')">
+                            <div class="doc-icon">
+                                {% if doc.document_type == 'TAX' %}
+                                🧾
+                                {% elif doc.document_type == 'BANK' %}
+                                🏦
+                                {% elif doc.document_type == 'INVOICE' %}
+                                📄
+                                {% endif %}
+                            </div>
+                            <div class="doc-content">
+                                <span class="doc-type {% if doc.document_type == 'TAX' %}tax{% elif doc.document_type == 'BANK' %}bank{% elif doc.document_type == 'INVOICE' %}invoice{% endif %}">
+                                    {{ doc.get_document_type_display }}
+                                </span>
+                                <div class="doc-title">{{ doc.title }}</div>
+                                
+                                {% if doc.document_type == 'TAX' %}
+                                <div class="doc-meta"><strong>Year:</strong> {{ doc.tax_year }}</div>
+                                {% if doc.property %}
+                                <div class="doc-meta"><strong>Property:</strong> {{ doc.property.short_name }}</div>
+                                {% endif %}
+                                {% endif %}
+
+                                {% if doc.document_type == 'BANK' %}
+                                <div class="doc-meta"><strong>Bank:</strong> {{ doc.bank_name }}</div>
+                                <div class="doc-meta"><strong>Period:</strong> {{ doc.statement_month|stringformat:"02d" }}/{{ doc.statement_year }}</div>
+                                {% endif %}
+
+                                {% if doc.document_type == 'INVOICE' %}
+                                <div class="doc-meta"><strong>Vendor:</strong> {{ doc.vendor_name }}</div>
+                                <div class="doc-meta"><strong>Date:</strong> {{ doc.invoice_date|date:"M d, Y" }}</div>
+                                {% endif %}
+
+                                {% if doc.file_size_mb %}
+                                <div class="doc-meta text-muted" style="margin-top: auto; padding-top: 0.5rem; border-top: 1px solid #e2e8f0;">
+                                    📦 {{ doc.file_size_mb }} MB
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="modern-card">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <h4 style="color: #2d3748; font-weight: 600;">No Documents Found</h4>
+                    <p>Try adjusting your filters to find the documents you're looking for.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="modern-card">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🔍</div>
+                    <h4 style="color: #2d3748; font-weight: 600;">Select a Document Type to Begin</h4>
+                    <p>Choose a document type above to browse available documents.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+    // Auto-submit form when filters change
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('filterForm');
+        if (!form) return;
+        
+        const inputs = form.querySelectorAll('select');
+        
+        inputs.forEach(input => {
+            input.addEventListener('change', function() {
+                form.submit();
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,171 +1,363 @@
 {% extends 'forensics/base.html' %}
 {% load humanize %}
-{% load forensics_filters %}
 
-{% block title %}Inventory Metrics - TraceFlow{% endblock %}
+{% block title %}Inventory - TraceFlow{% endblock %}
 
 {% block content %}
+<style>
+    /* Modern Gradient Background */
+    .inventory-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 3rem 0;
+        margin: -2rem -2rem 2rem -2rem;
+        border-radius: 0 0 30px 30px;
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        animation: slideDown 0.6s ease-out;
+    }
+    
+    .inventory-header h1 {
+        color: white;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        margin: 0;
+    }
+    
+    .inventory-header p {
+        color: rgba(255,255,255,0.9);
+        font-size: 1.1rem;
+        margin: 0.5rem 0 0 0;
+    }
+    
+    /* Modern Card Styles */
+    .modern-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .modern-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+    }
+    
+    /* Summary Card with Gradient */
+    .summary-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        transition: all 0.4s ease;
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .summary-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+    }
+    
+    .summary-card .card-body {
+        padding: 2rem;
+    }
+    
+    .summary-card h6 {
+        color: rgba(255,255,255,0.8);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
+    
+    .summary-card h2 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: white;
+        margin: 1rem 0;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .summary-card p {
+        color: rgba(255,255,255,0.9);
+        font-size: 1rem;
+    }
+    
+    /* Property Table */
+    .property-card {
+        background: white;
+        animation: fadeInUp 0.7s ease-out;
+    }
+    
+    .property-card .card-header {
+        background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+        border: none;
+        padding: 1.5rem;
+        border-radius: 20px 20px 0 0 !important;
+    }
+    
+    .property-card .card-header h5 {
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    .property-card .table {
+        margin: 0;
+    }
+    
+    .property-card .table thead th {
+        border: none;
+        background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        color: #2d3748;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        padding: 1rem;
+    }
+    
+    .property-card .table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .property-card .table tbody tr:hover {
+        background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        transform: scale(1.01);
+    }
+    
+    .property-card .table tbody td {
+        padding: 1.2rem 1rem;
+        vertical-align: middle;
+    }
+    
+    /* Filter Section */
+    .filter-card {
+        background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%);
+        border: 2px solid #e2e8f0;
+        animation: fadeInUp 0.8s ease-out;
+    }
+    
+    .filter-card .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 1.5rem;
+        border-radius: 18px 18px 0 0 !important;
+    }
+    
+    .filter-card .card-header h5 {
+        color: white;
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    .filter-card .card-body {
+        padding: 2rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .form-select, .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .form-select:focus, .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .form-check-input {
+        width: 1.5rem;
+        height: 1.5rem;
+        border: 2px solid #cbd5e0;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-check-input:checked {
+        background-color: #667eea;
+        border-color: #667eea;
+    }
+    
+    .form-check-label {
+        font-weight: 500;
+        color: #2d3748;
+        margin-left: 0.5rem;
+        font-size: 0.95rem;
+    }
+    
+    /* Results Table */
+    .results-card {
+        animation: fadeInUp 0.9s ease-out;
+    }
+    
+    .results-card .card-header {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        border: none;
+        padding: 1.5rem;
+        border-radius: 20px 20px 0 0 !important;
+    }
+    
+    .results-card .table {
+        font-size: 0.9rem;
+    }
+    
+    .results-card .table thead {
+        background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    }
+    
+    .results-card .table thead th {
+        color: white;
+        border: none;
+        padding: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .results-card .table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e2e8f0;
+        cursor: pointer;
+    }
+    
+    .results-card .table tbody tr:hover {
+        background: linear-gradient(90deg, rgba(72, 187, 120, 0.08) 0%, rgba(56, 161, 105, 0.08) 100%);
+        transform: translateX(5px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .results-card .table tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+    }
+    
+    /* Badges */
+    .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .badge.bg-success {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%) !important;
+        box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+    }
+    
+    .badge.bg-secondary {
+        background: linear-gradient(135deg, #718096 0%, #4a5568 100%) !important;
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Loading State */
+    .loading {
+        opacity: 0.6;
+        pointer-events: none;
+        position: relative;
+    }
+    
+    .loading::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 40px;
+        height: 40px;
+        margin: -20px 0 0 -20px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
 <div class="container-fluid mt-4">
-    <div class="row mb-4">
-        <div class="col">
-            <h1 class="display-4">LHS Inventory Metrics</h1>
-            <p class="lead text-muted">Comprehensive forensic analysis of property inventory and commissions</p>
+    <!-- Hero Header -->
+    <div class="inventory-header text-center">
+        <div class="container">
+            <h1 class="display-3">🏠 LHS Inventory</h1>
+            <p>Property inventory and unit management system</p>
         </div>
     </div>
 
-    <!-- Summary Cards -->
+    <!-- Summary Card -->
     <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card border-primary">
+        <div class="col-md-4 offset-md-4">
+            <div class="summary-card modern-card">
                 <div class="card-body text-center">
-                    <h6 class="card-subtitle mb-2 text-muted">Total Units</h6>
-                    <h2 class="card-title text-primary">{{ total_units|intcomma }}</h2>
-                    <p class="small mb-0">Across {{ total_properties }} Properties</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-success">
-                <div class="card-body text-center">
-                    <h6 class="card-subtitle mb-2 text-muted">Total Bank Balance</h6>
-                    <h2 class="card-title text-success">${{ total_bank_balance|floatformat:2|intcomma }}</h2>
-                    <p class="small mb-0">Per Unit BS Report</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-info">
-                <div class="card-body text-center">
-                    <h6 class="card-subtitle mb-2 text-muted">Total Sales</h6>
-                    <h2 class="card-title text-info">${{ total_sales|floatformat:2|intcomma }}</h2>
-                    <p class="small mb-0">Pre-tax Sale Amount</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-warning">
-                <div class="card-body text-center">
-                    <h6 class="card-subtitle mb-2 text-muted">Total Commissions</h6>
-                    <h2 class="card-title text-warning">${{ total_commission_amount|floatformat:2|intcomma }}</h2>
-                    <p class="small mb-0">{{ total_commissions }} Commission Records</p>
+                    <h6 class="card-subtitle mb-2">Total Units</h6>
+                    <h2 class="card-title">{{ total_units|intcomma }}</h2>
+                    <p class="mb-0">Across {{ total_properties }} Properties</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- LHS Ownership & Forensic Flags -->
+    <!-- Property List with Unit Counts -->
     <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0">LHS Ownership Status</h5>
+        <div class="col-lg-10 offset-lg-1">
+            <div class="modern-card property-card">
+                <div class="card-header text-white">
+                    <h5 class="mb-0">📊 Units by Property</h5>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-6 text-center border-end">
-                            <h4>{{ lhs_owned|intcomma }}</h4>
-                            <p class="text-muted mb-0">LHS Owned/Sold Units</p>
-                        </div>
-                        <div class="col-6 text-center">
-                            <h4>{{ lhs_rentals|intcomma }}</h4>
-                            <p class="text-muted mb-0">LHS Rental Units</p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="text-center">
-                        <h4>${{ total_rental_income|floatformat:2|intcomma }}</h4>
-                        <p class="text-muted mb-0">Total Rental Income (GL Credits)</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card border-danger">
-                <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0">🚨 Forensic Red Flags</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            MCO Mismatches
-                            <span class="badge bg-danger rounded-pill">{{ mco_mismatches }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            No MCO Available
-                            <span class="badge bg-danger rounded-pill">{{ no_mco_available }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Commission but No Sale
-                            <span class="badge bg-danger rounded-pill">{{ commission_no_sale }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            MCO Indicates Home Sale Entity
-                            <span class="badge bg-warning rounded-pill">{{ home_sale_entity_mco }}</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Commission Analysis -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card border-warning">
-                <div class="card-header bg-warning">
-                    <h5 class="mb-0">Commission Analysis</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4 text-center">
-                            <h4>{{ unsupported_commissions_count }}</h4>
-                            <p class="text-muted">Unsupported Commissions</p>
-                        </div>
-                        <div class="col-md-4 text-center">
-                            <h4 class="text-danger">${{ unsupported_commissions_total|floatformat:2|intcomma }}</h4>
-                            <p class="text-muted">Unsupported Amount</p>
-                        </div>
-                        <div class="col-md-4 text-center">
-                            {% if total_commission_amount > 0 %}
-                            <h4>{{ unsupported_commissions_total|percentage:total_commission_amount|floatformat:1 }}%</h4>
-                            {% else %}
-                            <h4>0.0%</h4>
-                            {% endif %}
-                            <p class="text-muted">% of Total Commissions</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Property Breakdown -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0">Property Breakdown</h5>
-                </div>
-                <div class="card-body">
+                <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
                                     <th>Property</th>
-                                    <th class="text-end">Units</th>
-                                    <th class="text-end">Bank Balance</th>
-                                    <th class="text-end">Total Sales</th>
-                                    <th class="text-end">Commissions</th>
+                                    <th class="text-end">Unit Count</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for property in property_stats %}
+                                {% for stat in property_stats %}
                                 <tr>
-                                    <td><strong>{{ property.full_name }}</strong> ({{ property.short_name }})</td>
-                                    <td class="text-end">{{ property.unit_count|intcomma }}</td>
-                                    <td class="text-end">${{ property.total_balance|default:0|floatformat:2|intcomma }}</td>
-                                    <td class="text-end">${{ property.total_sales|default:0|floatformat:2|intcomma }}</td>
-                                    <td class="text-end">{{ property.commission_count|intcomma }}</td>
+                                    <td><strong>{{ stat.property.full_name }}</strong> <span class="text-muted">({{ stat.property.short_name }})</span></td>
+                                    <td class="text-end"><span class="badge bg-primary" style="font-size: 1rem; padding: 0.5rem 1.2rem;">{{ stat.unit_count|intcomma }}</span></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -176,19 +368,193 @@
         </div>
     </div>
 
-    <!-- Action Buttons -->
+    <!-- Filters Section -->
     <div class="row mb-4">
-        <div class="col-md-12 text-center">
-            <a href="{% url 'forensics:inventory_unit_list' %}" class="btn btn-primary btn-lg me-2">
-                <i class="bi bi-house"></i> View All Units
-            </a>
-            <a href="{% url 'forensics:commission_list' %}" class="btn btn-warning btn-lg me-2">
-                <i class="bi bi-currency-dollar"></i> View All Commissions
-            </a>
-            <a href="{% url 'forensics:inventory_unit_list' %}?show_issues=1" class="btn btn-danger btn-lg">
-                <i class="bi bi-exclamation-triangle"></i> View Flagged Units
-            </a>
+        <div class="col-md-12">
+            <div class="modern-card filter-card">
+                <div class="card-header">
+                    <h5 class="mb-0">🔍 Filter Units</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" id="filterForm" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="base_property" class="form-label">Base Property</label>
+                            <select name="base_property" id="base_property" class="form-select">
+                                <option value="">All Properties</option>
+                                {% for property in properties %}
+                                <option value="{{ property.id }}" {% if selected_base_property == property.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ property.full_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="unit_lot" class="form-label">Unit / Lot</label>
+                            <input type="text" name="unit_lot" id="unit_lot" class="form-control" 
+                                   placeholder="Search by unit number..." value="{{ selected_unit_lot }}">
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="builder" class="form-label">Builder</label>
+                            <select name="builder" id="builder" class="form-select">
+                                <option value="">All Builders</option>
+                                {% for builder_name in builders %}
+                                <option value="{{ builder_name }}" {% if selected_builder == builder_name %}selected{% endif %}>
+                                    {{ builder_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="mco_owner" class="form-label">MCO - Owner</label>
+                            <select name="mco_owner" id="mco_owner" class="form-select">
+                                <option value="">All MCO Owners</option>
+                                {% for owner in mco_owners %}
+                                <option value="{{ owner }}" {% if selected_mco_owner == owner %}selected{% endif %}>
+                                    {{ owner }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="serial_number" class="form-label">Serial Number</label>
+                            <input type="text" name="serial_number" id="serial_number" class="form-control" 
+                                   placeholder="Search by serial number..." value="{{ selected_serial_number }}">
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label class="form-label d-block">&nbsp;</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="lhs_property" id="lhs_property" 
+                                       value="1" {% if selected_lhs_property %}checked{% endif %}>
+                                <label class="form-check-label" for="lhs_property">
+                                    Current LHS Property or Sold by LHS
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12 text-end mt-4">
+                            <a href="{% url 'forensics:inventory_metrics' %}" class="btn btn-lg" style="background: linear-gradient(135deg, #718096 0%, #4a5568 100%); color: white; border: none; border-radius: 12px; padding: 0.8rem 2.5rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3);">
+                                Clear Filters
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Filtered Results Table -->
+    {% if filters_active %}
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="modern-card results-card">
+                <div class="card-header text-white">
+                    <h5 class="mb-0">✨ Filtered Results ({{ filtered_units.count|intcomma }} units)</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Property</th>
+                                    <th>Unit/Lot</th>
+                                    <th>Base Unit</th>
+                                    <th>Builder</th>
+                                    <th>Serial Number</th>
+                                    <th>MCO Owner</th>
+                                    <th>Current Occupant</th>
+                                    <th class="text-center">LHS Property</th>
+                                    <th class="text-end">Sale Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for unit in filtered_units %}
+                                <tr onclick="window.location.href='{% url 'forensics:inventory_unit_detail' unit.id %}'">
+                                    <td><strong>{{ unit.property.short_name }}</strong></td>
+                                    <td><strong>{{ unit.unit_number }}</strong><br><small class="text-muted">{{ unit.property_unit }}</small></td>
+                                    <td>{{ unit.base_unit }}</td>
+                                    <td>{{ unit.builder|default:"—" }}</td>
+                                    <td><code style="background: #f7fafc; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.85rem;">{{ unit.serial_number|default:"—" }}</code></td>
+                                    <td>{{ unit.mco_owner|default:"—" }}</td>
+                                    <td>
+                                        {% if unit.current_occupant %}
+                                            {{ unit.current_occupant|truncatewords:3 }}
+                                        {% else %}
+                                            <span class="text-muted">Vacant</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if unit.current_lhs_property %}
+                                            <span class="badge bg-success">Yes</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">No</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if unit.sale_amount_pre_tax %}
+                                            <strong style="color: #48bb78;">${{ unit.sale_amount_pre_tax|floatformat:2|intcomma }}</strong>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center py-5">
+                                        <div style="font-size: 3rem; opacity: 0.3;">📭</div>
+                                        <p class="text-muted mt-3">No units match the selected filters.</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
 </div>
+
+<script>
+    // Auto-submit form when filters change
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('filterForm');
+        const inputs = form.querySelectorAll('select, input[type="text"], input[type="checkbox"]');
+        
+        let debounceTimer;
+        
+        inputs.forEach(input => {
+            if (input.type === 'text') {
+                // Debounce text inputs
+                input.addEventListener('input', function() {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => {
+                        if (input.value.length === 0 || input.value.length >= 2) {
+                            form.submit();
+                        }
+                    }, 500);
+                });
+            } else {
+                // Immediate submit for selects and checkboxes
+                input.addEventListener('change', function() {
+                    form.submit();
+                });
+            }
+        });
+        
+        // Add loading state on submit
+        form.addEventListener('submit', function() {
+            const resultsSection = document.querySelector('.results-card');
+            if (resultsSection) {
+                resultsSection.classList.add('loading');
+            }
+        });
+    });
+</script>
 {% endblock %}
