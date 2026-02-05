@@ -165,6 +165,11 @@ class InventoryUnit(models.Model):
     )
     bill_to = models.CharField(max_length=255, blank=True, help_text="Bill To party")
     builder = models.CharField(max_length=255, blank=True, help_text="Builder name")
+    builder_pdf_filename = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Builder PDF Filename"
+    )
     
     # Commissions
     has_commissions = models.BooleanField(
@@ -276,6 +281,7 @@ class Document(models.Model):
         ('TAX', 'Tax Return'),
         ('BANK', 'Bank Statement'),
         ('INVOICE', 'Invoice'),
+        ('BUILDER_INVOICE', 'Builder Invoice'),
     ]
     
     # Basic Info
@@ -291,6 +297,14 @@ class Document(models.Model):
         null=True,
         blank=True,
         help_text="Related property"
+    )
+    inventory_unit = models.ForeignKey(
+        'InventoryUnit',
+        on_delete=models.CASCADE,
+        related_name='documents',
+        null=True,
+        blank=True,
+        help_text="Associated inventory unit (for builder invoices)"
     )
     
     # Document Details
@@ -364,6 +378,11 @@ class Document(models.Model):
         max_length=500,
         blank=True,
         help_text="Path to document file"
+    )
+    gcs_path = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Path in GCP Cloud Storage (gs://bucket/path/to/file)"
     )
     file_size_mb = models.DecimalField(
         max_digits=10,

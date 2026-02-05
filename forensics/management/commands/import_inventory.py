@@ -31,7 +31,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Existing data cleared'))
         
         # Define data directory
-        data_dir = os.path.join('forensics', 'data')
+        data_dir = os.path.join('forensics', 'data-2026-01-29')
         
         # Property mapping
         property_map = {
@@ -200,6 +200,7 @@ class Command(BaseCommand):
                 builder_ship_date=self.parse_date(row.get(' Builder Ship Date ')),
                 bill_to=self.clean_string(row.get(' Bill To ')),
                 builder=self.clean_string(row.get(' Builder ')),
+                builder_pdf_filename=self.clean_string(row.get('Builder PDF Filename')),
                 
                 # Commissions
                 has_commissions=self.parse_boolean(row.get('Has_Commissions')),

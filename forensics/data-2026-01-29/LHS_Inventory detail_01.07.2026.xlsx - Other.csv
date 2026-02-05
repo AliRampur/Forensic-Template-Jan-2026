@@ -1,0 +1,142 @@
+DRAFT - For Discussion Purposes Only,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Inventory of Other/LHS Units (Park is Unknown),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Identified based on the existence of any Expense or GL Report in RM,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,Sale Amount (Based on Sale / Revenue GL Account),,,,,,,,,,Commissions (GL detail - RM),,,,,Rental Unit Listing Report (RM),,,,A/P Detail (as of 10/29/25) - RM,,,,Observations,,,
+Definition of each header:,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Unit # identified in RM,,Full Property/Park Name,Acronym for Full Property Name,Combination of Full Property Acronym and Unit # (used as a unique ID),"Combination of Base Property (GC, PEM, SPR, SR) and Unit #","Base Property (GC, PEM, SPR, SR). LHS is not a base property",,,"See "":Copy of LHS Inventory Showing Rentals.xlsx"" file. Utilized the ""Lot"" and ""Property"" fields.",,Extracted the GL Bank balance from the Unit BS report,Based on extration of MCO detail from Cavco/Champion Invoices,Based on extration of MCO detail from Cavco/Champion Invoices,,Based on extration of MCO detail from Cavco/Champion Invoices,Based on extration of Invoice detail from Cavco/Champion Invoices,,,,,,Comparison of the unit # noted on the Cavco/Champion invoice against the Unit # in RM where it is recorded,,,,,,,,,,,,,,,,,,,,,3,10,2,,,,
+Unit / Lot,#,Property,Prop Short Name,Property_Unit,Base_unit,"Base Property
+(Other = Park is unknown)",Current LHS Property or Sold by LHS,LHS Rental,Rental List,Has_Commissions,Total Bank GL Balance (Per Unit BS Report),MCO Owner Matches Property Name?,MCO - Owner,Duplicate MCO (2nd version),MCO Date and Inv Ref,Lot / Unit, Builder Invoice Amount , Builder Invoice Date , Builder Ship Date , Bill To , Builder ,Lot/Unit on Cavco/Champion/etc. does not match, Sale Amount (pre-tax) , Sale Deposited to: , Use of LHS Funds: ,Description,Property,Date," GL Rental Income (Credits to M-Lots, Daily Guest Fees, etc.) ", GL - Credits to Unearned Rent/Prepaid) , GL Rental Deposits (Deposit to cash accounts) ,Total Sale Price per PEM Sales Contract,Billed (e.g. SBR),Memo / Invoice Number,Supported / Unsupported / Insufficient,Comments,% of Sales Price, ,Address,Current Occupant,Market Rental,Total,Cavco/Champion/CMH,SBR,All Others,1) MCO does not match,2) MCO indicates Home Sale Entity as Owner,3) Commission recorded but no sale identified,4) No MCO available
+2,1,Leisure Home Sales,LHS,LHS_2,Other_2,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,,,,,,,,x
+3,2,Leisure Home Sales,LHS,LHS_3,Other_3,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,,,,,,,,x
+14,1002,Leisure Home Sales,LHS,LHS_14,Other_14,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+15,1007,Leisure Home Sales,LHS,LHS_15,Other_15,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+89,1166,Leisure Home Sales,LHS,LHS_89,Other_89,Other,Y,,No,No,  (130.79),,,,,,"  110,155.00 ",,,, Cavco ,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,"  110,285.79 ","  110,155.00 ",  -   ,  130.79 ,,,,x
+121,971,Leisure Home Sales,LHS,LHS_121,Other_121,Other,Y,,No,No,  (889.88),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  889.88 ,  -   ,  -   ,  889.88 ,,,,x
+122,972,Leisure Home Sales,LHS,LHS_122,Other_122,Other,Y,,No,No,"  (1,484.00)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,GC Rental,,Vacant,0,"  1,484.00 ",  -   ,  -   ,"  1,484.00 ",,,,x
+145,1005,Leisure Home Sales,LHS,LHS_145,Other_145,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+147,1006,Leisure Home Sales,LHS,LHS_147,Other_147,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+226,1025,Leisure Home Sales,LHS,LHS_226,Other_226,Other,Y,,No,No,  (550.00),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  550.00 ,  -   ,  -   ,  550.00 ,,,,x
+227,1026,Leisure Home Sales,LHS,LHS_227,Other_227,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+239,1032,Leisure Home Sales,LHS,LHS_239,Other_239,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+246,1059,Leisure Home Sales,LHS,LHS_246,Other_246,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+255,1061,Leisure Home Sales,LHS,LHS_255,Other_255,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+256,1062,Leisure Home Sales,LHS,LHS_256,Other_256,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+297,1066,Leisure Home Sales,LHS,LHS_297,Other_297,Other,Y,,No,No,"  (1,426.00)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,SALES OFFICE,,Vacant,0,"  1,426.00 ",  -   ,  -   ,"  1,426.00 ",,,,x
+332,1073,Leisure Home Sales,LHS,LHS_332,Other_332,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+349,1078,Leisure Home Sales,LHS,LHS_349,Other_349,Other,Y,,No,No,  (150.00),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  150.00 ,  -   ,  -   ,  150.00 ,,,,x
+352,1080,Leisure Home Sales,LHS,LHS_352,Other_352,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+354,1082,Leisure Home Sales,LHS,LHS_354,Other_354,Other,Y,,No,No,  (170.73),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,  170.73 ,  -   ,  -   ,  170.73 ,,,,x
+373,1085,Leisure Home Sales,LHS,LHS_373,Other_373,Other,Y,,No,No,"  (129,675.48)",,,,,,"  74,279.00 ",,,, Cavco ,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,"  128,843.48 ","  74,279.00 ",  -   ,"  54,564.48 ",,,,x
+384,1088,Leisure Home Sales,LHS,LHS_384,Other_384,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+411,1093,Leisure Home Sales,LHS,LHS_411,Other_411,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+414,1094,Leisure Home Sales,LHS,LHS_414,Other_414,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+473,1103,Leisure Home Sales,LHS,LHS_473,Other_473,Other,Y,,No,No,  30.00 ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,,,,,,,,x
+474,1104,Leisure Home Sales,LHS,LHS_474,Other_474,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+540,1107,Leisure Home Sales,LHS,LHS_540,Other_540,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+579,1110,Leisure Home Sales,LHS,LHS_579,Other_579,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+588,1113,Leisure Home Sales,LHS,LHS_588,Other_588,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+610,1115,Leisure Home Sales,LHS,LHS_610,Other_610,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+618,1117,Leisure Home Sales,LHS,LHS_618,Other_618,Other,Y,,No,No,"  (66,462.00)",,,,,,"  44,478.00 ",,,, Cavco ,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,"  65,311.00 ","  44,478.00 ",  -   ,"  20,833.00 ",,,,x
+669,1119,Leisure Home Sales,LHS,LHS_669,Other_669,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+690,1120,Leisure Home Sales,LHS,LHS_690,Other_690,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+709,1123,Leisure Home Sales,LHS,LHS_709,Other_709,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+710,1124,Leisure Home Sales,LHS,LHS_710,Other_710,Other,Y,,No,No,"  (57,229.19)",,,,,,  -   ,,,,,,,,,,,,  -   ,  -   ,#N/A,,,,,,,Sales,,Vacant,0,"  54,551.29 ",  -   ,  -   ,"  54,551.29 ",,,,x
+733,1126,Leisure Home Sales,LHS,LHS_733,Other_733,Other,Y,,No,No,"  (79,184.40)",,,,,,"  54,093.00 ",,,, Cavco ,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,"  77,956.40 ","  54,093.00 ",  -   ,"  23,863.40 ",,,,x
+742,1128,Leisure Home Sales,LHS,LHS_742,Other_742,Other,Y,,No,No,  (125.00),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,  125.00 ,  -   ,  -   ,  125.00 ,,,,x
+750,1129,Leisure Home Sales,LHS,LHS_750,Other_750,Other,Y,,No,No,  (64.25),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,  64.25 ,  -   ,  -   ,  64.25 ,,,,x
+768,1130,Leisure Home Sales,LHS,LHS_768,Other_768,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+771,1131,Leisure Home Sales,LHS,LHS_771,Other_771,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,,,,,,,,x
+773,1132,Leisure Home Sales,LHS,LHS_773,Other_773,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,,,,,,,,x
+775,1134,Leisure Home Sales,LHS,LHS_775,Other_775,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+776,1135,Leisure Home Sales,LHS,LHS_776,Other_776,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+850,1152,Leisure Home Sales,LHS,LHS_850,Other_850,Other,Y,,No,No,"  (3,476.86)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,"  3,476.86 ",  -   ,  -   ,"  3,476.86 ",,,,x
+854,1153,Leisure Home Sales,LHS,LHS_854,Other_854,Other,Y,,No,No,"  (1,710.00)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,"  1,710.00 ",  -   ,  -   ,"  1,710.00 ",,,,x
+864,1155,Leisure Home Sales,LHS,LHS_864,Other_864,Other,Y,,No,No,  (7.00),,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,,,,,,,,x
+865,1156,Leisure Home Sales,LHS,LHS_865,Other_865,Other,Y,,No,No,  (166.85),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,  166.85 ,  -   ,  -   ,  166.85 ,,,,x
+870,1159,Leisure Home Sales,LHS,LHS_870,Other_870,Other,Y,,No,No,  (997.62),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,  997.62 ,  -   ,  -   ,  997.62 ,,,,x
+871,1160,Leisure Home Sales,LHS,LHS_871,Other_871,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,,,,,,,,x
+874,1162,Leisure Home Sales,LHS,LHS_874,Other_874,Other,Y,,No,No,  (310.00),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  310.00 ,  -   ,  -   ,  310.00 ,,,,x
+883,1164,Leisure Home Sales,LHS,LHS_883,Other_883,Other,Y,,No,No,"  (4,667.72)",,,,,,  -   ,,,,,,,,,,,,  690.00 ,  -   ,#N/A,,,,,,,Manager House,,Vacant,0,"  9,357.72 ",  -   ,  -   ,"  9,357.72 ",,,,x
+924,1168,Leisure Home Sales,LHS,LHS_924,Other_924,Other,Y,,No,No,  (40.00),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  40.00 ,  -   ,  -   ,  40.00 ,,,,x
+943,1169,Leisure Home Sales,LHS,LHS_943,Other_943,Other,Y,,No,No,  (54.26),,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,,,,,,,,x
+1144,969,Leisure Home Sales,LHS,LHS_1144,Other_1144,Other,Y,,No,No,  (150.00),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  150.00 ,  -   ,  -   ,  150.00 ,,,,x
+1250,973,Leisure Home Sales,LHS,LHS_1250,Other_1250,Other,Y,,No,No,  (655.00),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,  655.00 ,  -   ,  -   ,  655.00 ,,,,x
+1251,974,Leisure Home Sales,LHS,LHS_1251,Other_1251,Other,Y,,No,No,  (60.00),,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1252,975,Leisure Home Sales,LHS,LHS_1252,Other_1252,Other,Y,,No,No,"  (2,390.00)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,"  2,390.00 ",  -   ,  -   ,"  2,390.00 ",,,,x
+1253,976,Leisure Home Sales,LHS,LHS_1253,Other_1253,Other,Y,,No,No,"  (1,030.00)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,"  1,030.00 ",  -   ,  -   ,"  1,030.00 ",,,,x
+1254,977,Leisure Home Sales,LHS,LHS_1254,Other_1254,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1255,978,Leisure Home Sales,LHS,LHS_1255,Other_1255,Other,Y,,No,No,"  (21,257.71)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,"  19,601.21 ",  -   ,  -   ,"  19,601.21 ",,,,x
+1256,979,Leisure Home Sales,LHS,LHS_1256,Other_1256,Other,Y,,No,No,"  (22,853.54)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,"  20,335.70 ",  -   ,  -   ,"  20,335.70 ",,,,x
+1257,980,Leisure Home Sales,LHS,LHS_1257,Other_1257,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1258,981,Leisure Home Sales,LHS,LHS_1258,Other_1258,Other,Y,,No,No,  (60.00),,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1259,982,Leisure Home Sales,LHS,LHS_1259,Other_1259,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1260,983,Leisure Home Sales,LHS,LHS_1260,Other_1260,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1261,984,Leisure Home Sales,LHS,LHS_1261,Other_1261,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1262,985,Leisure Home Sales,LHS,LHS_1262,Other_1262,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1263,986,Leisure Home Sales,LHS,LHS_1263,Other_1263,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1264,987,Leisure Home Sales,LHS,LHS_1264,Other_1264,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1265,988,Leisure Home Sales,LHS,LHS_1265,Other_1265,Other,Y,,No,No,  (60.00),,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1266,989,Leisure Home Sales,LHS,LHS_1266,Other_1266,Other,Y,,No,No,"  (12,531.43)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,"  9,876.43 ",  -   ,  -   ,"  9,876.43 ",,,,x
+1267,990,Leisure Home Sales,LHS,LHS_1267,Other_1267,Other,Y,,No,No,"  (2,694.32)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,  350.00 ,  -   ,  -   ,  350.00 ,,,,x
+1268,991,Leisure Home Sales,LHS,LHS_1268,Other_1268,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1269,992,Leisure Home Sales,LHS,LHS_1269,Other_1269,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1270,993,Leisure Home Sales,LHS,LHS_1270,Other_1270,Other,Y,,No,No,"  (1,200.00)",,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1271,994,Leisure Home Sales,LHS,LHS_1271,Other_1271,Other,Y,,No,No,  -   ,,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+1272,995,Leisure Home Sales,LHS,LHS_1272,Other_1272,Other,Y,,No,No,"  (73,349.15)",,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,Creekside,Vacant,0,,,,,,,,x
+2337,1030,Leisure Home Sales,LHS,LHS_2337,Other_2337,Other,Y,,No,No,"  2,000.00 ",,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,,,,,,,,x
+3981,1092,Leisure Home Sales,LHS,LHS_3981,Other_3981,Other,Y,,No,No,"  3,000.00 ",,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,  -   ,,,,,Manager House,,Vacant,0,,,,,,,,x
+10247,962,Leisure Home Sales,LHS,LHS_10247,Other_10247,Other,Y,,No,Yes,"  2,350.00 ",,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,  -   ,,,,,Manager House,,Vacant,0,,,,,,,x,x
+10620,963,Leisure Home Sales,LHS,LHS_10620,Other_10620,Other,Y,,No,No,"  4,500.00 ",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,  500.00 ,  -   ,  -   ,  500.00 ,,,,x
+10939,965,Leisure Home Sales,LHS,LHS_10939,Other_10939,Other,Y,,No,No,"  31,913.20 ",,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,,,,,,,,x
+11325,968,Leisure Home Sales,LHS,LHS_11325,Other_11325,Other,Y,,No,No,  (742.72),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  742.72 ,  -   ,  -   ,  742.72 ,,,,x
+13068,998,Leisure Home Sales,LHS,LHS_13068,Other_13068,Other,Y,,No,No,  (25.00),,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,,,,,,,,x
+13317,1000,Leisure Home Sales,LHS,LHS_13317,Other_13317,Other,Y,,No,No,  (943.08),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  943.08 ,  -   ,  -   ,  943.08 ,,,,x
+21267,1022,Leisure Home Sales,LHS,LHS_21267,Other_21267,Other,Y,,No,No,"  (1,002.54)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,"  1,002.54 ",  -   ,  -   ,"  1,002.54 ",,,,x
+24040,1035,Leisure Home Sales,LHS,LHS_24040,Other_24040,Other,Y,,No,No,"  (56,911.37)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,"  61,483.80 ",  -   ,  -   ,"  61,483.80 ",,,,x
+24136,1043,Leisure Home Sales,LHS,LHS_24136,Other_24136,Other,Y,,No,No,"  (1,125.00)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,"  1,100.00 ",  -   ,  -   ,"  1,100.00 ",,,,x
+24138,1044,Leisure Home Sales,LHS,LHS_24138,Other_24138,Other,Y,,No,No,  (500.00),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  500.00 ,  -   ,  -   ,  500.00 ,,,,x
+24183,1046,Leisure Home Sales,LHS,LHS_24183,Other_24183,Other,Y,,No,No,"  (56,089.72)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,"  26,346.86 ",  -   ,  -   ,"  26,346.86 ",,,,x
+24230,1050,Leisure Home Sales,LHS,LHS_24230,Other_24230,Other,Y,,No,No,"  (42,355.22)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  448.59 ,  -   ,  -   ,  448.59 ,,,,x
+24234,1051,Leisure Home Sales,LHS,LHS_24234,Other_24234,Other,Y,,No,No,"  5,000.00 ",,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,,,,,,,,x
+24263,1053,Leisure Home Sales,LHS,LHS_24263,Other_24263,Other,Y,,No,No,"  (5,057.07)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,"  3,840.23 ",  -   ,  -   ,"  3,840.23 ",,,,x
+38037,1086,Leisure Home Sales,LHS,LHS_38037,Other_38037,Other,Y,,No,No,  (25.00),,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,,,,,,,,x
+80753,1140,Leisure Home Sales,LHS,LHS_80753,Other_80753,Other,Y,,No,No,"  3,000.00 ",,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,  -   ,,,,,Manager House,,Vacant,0,,,,,,,,x
+80773,1141,Leisure Home Sales,LHS,LHS_80773,Other_80773,Other,Y,,No,No,  (25.00),,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,,,,,,,,x
+91195,1167,Leisure Home Sales,LHS,LHS_91195,Other_91195,Other,Y,,No,No,  (25.00),,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,,,,,,,,x
+137B,1001,Leisure Home Sales,LHS,LHS_137B,Other_137B,Other,Y,,No,No,"  (1,508.07)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,"  1,136.30 ",  -   ,  -   ,"  1,136.30 ",,,,x
+162C,1009,Leisure Home Sales,LHS,LHS_162C,Other_162C,Other,Y,,No,No,  (69.82),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,  119.64 ,  -   ,  -   ,  119.64 ,,,,x
+16A,1010,Leisure Home Sales,LHS,LHS_16A,Other_16A,Other,Y,,No,No,  (125.00),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  125.00 ,  -   ,  -   ,  125.00 ,,,,x
+179B,1013,Leisure Home Sales,LHS,LHS_179B,Other_179B,Other,Y,,No,No,  (5.63),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  5.63 ,  -   ,  -   ,  5.63 ,,,,x
+194C,1015,Leisure Home Sales,LHS,LHS_194C,Other_194C,Other,Y,,No,No,"  (1,722.30)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,"  1,722.30 ",  -   ,  -   ,"  1,722.30 ",,,,x
+198C,1017,Leisure Home Sales,LHS,LHS_198C,Other_198C,Other,Y,,No,No,"  5,176.94 ",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,  -   ,,,,,Manager House,,Vacant,0,  520.33 ,  -   ,  -   ,  520.33 ,,,,x
+218D,1023,Leisure Home Sales,LHS,LHS_218D,Other_218D,Other,Y,,No,No,  (561.50),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,N/A,N/A,N/A,N/A,  561.50 ,  -   ,  -   ,  561.50 ,,,,x
+22A,1027,Leisure Home Sales,LHS,LHS_22A,Other_22A,Other,Y,,No,No,  (367.81),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,  357.81 ,  -   ,  -   ,  357.81 ,,,,x
+230D,1028,Leisure Home Sales,LHS,LHS_230D,Other_230D,Other,Y,,No,Yes,"  80,310.17 ",,,,,,  -   ,,,,,,"  86,995.00 ",,, Home Closing 230D , Leisure Home Sales ,8/6/2020,  -   ,  -   ,#N/A,,  -   ,,,,,Manager House,,Vacant - (Model),0,"  1,511.85 ",  -   ,  -   ,"  1,511.85 ",,,,x
+236D,1031,Leisure Home Sales,LHS,LHS_236D,Other_236D,Other,Y,,No,No,"  (79,705.13)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,"  27,058.13 ",  -   ,  -   ,"  27,058.13 ",,,,x
+256D,1063,Leisure Home Sales,LHS,LHS_256D,Other_256D,Other,Y,,No,No,"  (110,105.26)",,,,,,"  70,532.00 ",,,, Cavco ,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,"  109,605.18 ","  70,532.00 ",  -   ,"  39,073.18 ",,,,x
+25A,1064,Leisure Home Sales,LHS,LHS_25A,Other_25A,Other,Y,,No,No,  (10.00),,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,,,,,,,,x
+273D,1065,Leisure Home Sales,LHS,LHS_273D,Other_273D,Other,Y,,No,No,  (441.59),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  400.00 ,  -   ,  -   ,  400.00 ,,,,x
+308D,1068,Leisure Home Sales,LHS,LHS_308D,Other_308D,Other,Y,,No,No,"  (1,500.62)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,"  1,500.62 ",  -   ,  -   ,"  1,500.62 ",,,,x
+311D,1069,Leisure Home Sales,LHS,LHS_311D,Other_311D,Other,Y,,No,Yes,"  88,886.77 ",,,,,,  -   ,,,,,,"  90,995.00 ", LHS 7307 ,, Home Closing 311D , Leisure Home Sales ,12/1/2020,  -   ,  -   ,#N/A,,  -   ,,,,,Manager House,,Vacant,0,  571.57 ,  -   ,  -   ,  571.57 ,,,,x
+320D,1070,Leisure Home Sales,LHS,LHS_320D,Other_320D,Other,Y,,No,No,  (428.36),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  180.00 ,  -   ,  -   ,  180.00 ,,,,x
+326D,1071,Leisure Home Sales,LHS,LHS_326D,Other_326D,Other,Y,,No,No,"  (120,219.69)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,"  37,343.48 ",  -   ,  -   ,"  37,343.48 ",,,,x
+332E,1074,Leisure Home Sales,LHS,LHS_332E,Other_332E,Other,Y,,No,No,"  (1,472.90)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,"  1,472.90 ",  -   ,  -   ,"  1,472.90 ",,,,x
+335E,1075,Leisure Home Sales,LHS,LHS_335E,Other_335E,Other,Y,,No,No,  (94.75),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  94.75 ,  -   ,  -   ,  94.75 ,,,,x
+339E,1076,Leisure Home Sales,LHS,LHS_339E,Other_339E,Other,Y,,No,No,  (713.46),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  125.00 ,  -   ,  -   ,  125.00 ,,,,x
+351E,1079,Leisure Home Sales,LHS,LHS_351E,Other_351E,Other,Y,,No,Yes,"  90,555.50 ",,,,,,  -   ,,,,,,"  93,995.00 ", LHS 7307 ,, Home Closing 351E , Leisure Home Sales ,10/29/2020,  -   ,  -   ,#N/A,,  -   ,,,,,Manager House,,Vacant,0,"  1,559.92 ",  -   ,  -   ,"  1,559.92 ",,,,x
+366F,1084,Leisure Home Sales,LHS,LHS_366F,Other_366F,Other,Y,,No,No,"  (109,363.40)",,,,,,"  63,448.00 ",,,, Cavco ,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,"  109,044.72 ","  63,448.00 ",  -   ,"  45,596.72 ",,,,x
+382F,1087,Leisure Home Sales,LHS,LHS_382F,Other_382F,Other,Y,,No,No,  (729.25),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  729.25 ,  -   ,  -   ,  729.25 ,,,,x
+414G,1095,Leisure Home Sales,LHS,LHS_414G,Other_414G,Other,Y,,No,No,"  (1,590.92)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,"  1,560.93 ",  -   ,  -   ,"  1,560.93 ",,,,x
+4A,1105,Leisure Home Sales,LHS,LHS_4A,Other_4A,Other,Y,,No,No,  (99.00),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  99.00 ,  -   ,  -   ,  99.00 ,,,,x
+578J,1109,Leisure Home Sales,LHS,LHS_578J,Other_578J,Other,Y,,No,No,"  121,707.51 ",,,,,,,,,,,,"  122,392.79 ", LHS 7307 ,, LHS General 7307  Voluntary Repo-Home Sale 578J , Leisure Home Sales ,4/16/2021,  -   ,  -   ,#N/A,,,,,,,Manager House,,Vacant,0,,,,,,,,x
+608L,1114,Leisure Home Sales,LHS,LHS_608L,Other_608L,Other,Y,,No,No,"  89,149.07 ",,,,,,  -   ,,,,,,"  88,995.00 ", LHS 7307 ,, Closing 608L , Leisure Home Sales ,9/11/2020,  -   ,  -   ,#N/A,,,,,,,Manager House,,Vacant,0,  410.44 ,  -   ,  -   ,  410.44 ,,,,x
+610L,1116,Leisure Home Sales,LHS,LHS_610L,Other_610L,Other,Y,,No,No,  (290.42),,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,,,,,,,,x
+619L,1118,Leisure Home Sales,LHS,LHS_619L,Other_619L,Other,Y,,No,Yes,"  11,996.03 ",,,,,,  -   ,,,,,,"  93,995.00 ", LHS 7307 ,, Home Closing 619L , Leisure Home Sales ,12/2/2020,  -   ,  -   ,#N/A,,  -   ,,,,,Manager House,,Vacant,0,"  25,714.96 ",  -   ,  -   ,"  25,714.96 ",,,,x
+A067,1170,Leisure Home Sales,LHS,LHS_A067,Other_A067,Other,Y,,No,No,  (300.00),,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  300.00 ,  -   ,  -   ,  300.00 ,,,,x
+A73,1171,Leisure Home Sales,LHS,LHS_A73,Other_A73,Other,Y,,No,No,  (537.39),,,,,,,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,,,,,,,,x
+C1267,1172,Leisure Home Sales,LHS,LHS_C1267,Other_C1267,Other,Y,,No,No,"  (10,101.20)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Sales,,Vacant,0,"  10,101.20 ",  -   ,  -   ,"  10,101.20 ",,,,x
+CS001,1173,Leisure Home Sales,LHS,LHS_CS001,Other_CS001,Other,Y,,No,No,"  (71,275.67)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  868.48 ,  -   ,  -   ,  868.48 ,,,,x
+CS002,1174,Leisure Home Sales,LHS,LHS_CS002,Other_CS002,Other,Y,,No,No,"  (77,218.32)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  897.88 ,  -   ,  -   ,  897.88 ,,,,x
+CS003,1175,Leisure Home Sales,LHS,LHS_CS003,Other_CS003,Other,Y,,No,No,"  (2,842.01)",,,,,,  -   ,,,,,,,,,,,,#N/A,#N/A,#N/A,,,,,,,Manager House,,Vacant,0,  891.38 ,  -   ,  -   ,  891.38 ,,,,x

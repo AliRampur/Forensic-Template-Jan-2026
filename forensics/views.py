@@ -168,8 +168,8 @@ def sankey_view(request):
 def inventory_metrics_view(request):
     """Overall inventory metrics showing units by property with filtering."""
     
-    # Basic counts
-    total_units = InventoryUnit.objects.count()
+    # Basic counts - count unique base units across all properties
+    total_units = InventoryUnit.objects.values('base_unit').distinct().count()
     total_properties = Property.objects.count()
     
     # Property breakdown with unique base_unit counts
@@ -183,9 +183,6 @@ def inventory_metrics_view(request):
             'property': property_obj,
             'unit_count': unique_base_units
         })
-    
-    # Sort by unit count in descending order
-    property_stats.sort(key=lambda x: x['unit_count'], reverse=True)
     
     # Handle filtering
     queryset = InventoryUnit.objects.all().select_related('property')
@@ -239,6 +236,28 @@ def inventory_metrics_view(request):
     paginator = Paginator(units_to_display, 25)  # Show 25 units per page
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
+    
+    # Recalculate property_stats based on filtered units for bar chart
+    property_stats = []
+    property_unit_counts = {}
+    
+    # Get unique base_unit counts per property from filtered units
+    for unit in filtered_units.values('property', 'base_unit').distinct():
+        prop_id = unit['property']
+        if prop_id not in property_unit_counts:
+            property_unit_counts[prop_id] = set()
+        property_unit_counts[prop_id].add(unit['base_unit'])
+    
+    # Build property_stats with counts
+    for prop_id, base_units in property_unit_counts.items():
+        property_obj = Property.objects.get(id=prop_id)
+        property_stats.append({
+            'property': property_obj,
+            'unit_count': len(base_units)
+        })
+    
+    # Sort by unit count in descending order
+    property_stats.sort(key=lambda x: x['unit_count'], reverse=True)
     
     # Create bar chart for property units
     property_names = [stat['property'].short_name for stat in property_stats]
@@ -316,6 +335,7 @@ def document_inventory_view(request):
     """Document inventory and retrieval page."""
     from django.db.models import Q
     from .inventory_models import Document
+    from .gcs_utils import list_builder_invoices, get_file_url
     
     # Get filter parameters
     doc_type = request.GET.get('doc_type', '')
@@ -325,15 +345,57 @@ def document_inventory_view(request):
     properties = Property.objects.all().order_by('short_name')
     
     # Initialize queryset
-    documents = Document.objects.all().select_related('property')
+    documents = Document.objects.all().select_related('property', 'inventory_unit')
+    
+    # Handle builder invoices separately (fetched from GCS)
+    builder_invoices = []
+    builder_invoices_with_units = {}
+    
+    if doc_type == '' or doc_type == 'BUILDER_INVOICE':
+        # Fetch from GCS
+        builder_invoices = list_builder_invoices()
+        
+        # Try to match with database documents and inventory units
+        for invoice in builder_invoices:
+            doc = Document.objects.filter(
+                document_type='BUILDER_INVOICE',
+                gcs_path=invoice['gcs_path']
+            ).select_related('inventory_unit').first()
+            
+            if doc:
+                invoice['inventory_unit'] = doc.inventory_unit
+                invoice['document_id'] = doc.id
+            
+            # Get signed URL if not already available
+            if not invoice.get('url'):
+                invoice['url'] = get_file_url(invoice['gcs_path'])
+            
+            builder_invoices_with_units[invoice['gcs_path']] = invoice
     
     # Apply document type filter
-    if doc_type:
+    if doc_type and doc_type != 'BUILDER_INVOICE':
         documents = documents.filter(document_type=doc_type)
+    elif doc_type == 'BUILDER_INVOICE':
+        # Exclude builder invoices from regular document queryset
+        documents = documents.filter(document_type='BUILDER_INVOICE')
     
     # Apply property filter
     if property_id:
         documents = documents.filter(property_id=property_id)
+        
+        # Also filter builder invoices by property if a property is selected
+        if doc_type == 'BUILDER_INVOICE':
+            property_obj = Property.objects.get(id=property_id) if property_id else None
+            if property_obj:
+                filtered_invoices = {}
+                for gcs_path, invoice in builder_invoices_with_units.items():
+                    # Filter by property - either through linked inventory unit or match property name in filename
+                    if invoice.get('inventory_unit') and invoice['inventory_unit'].property_id == int(property_id):
+                        filtered_invoices[gcs_path] = invoice
+                    # Also try to match by filename pattern (e.g., "GCRV_filename" for Gold Canyon property)
+                    elif property_obj.short_name.upper() in invoice['name'].upper():
+                        filtered_invoices[gcs_path] = invoice
+                builder_invoices_with_units = filtered_invoices
     
     # Apply additional filters based on document type
     if doc_type == 'TAX':
@@ -397,6 +459,8 @@ def document_inventory_view(request):
             'invoice_years': invoice_years,
             'vendors': vendors,
         }
+    elif doc_type == 'BUILDER_INVOICE':
+        context_extra = {}
     else:
         context_extra = {}
     
@@ -406,7 +470,8 @@ def document_inventory_view(request):
     context = {
         'doc_type': doc_type,
         'properties': properties,
-        'documents': documents if filters_active else None,
+        'documents': documents if filters_active and doc_type != 'BUILDER_INVOICE' else None,
+        'builder_invoices': builder_invoices_with_units.values() if filters_active and doc_type == 'BUILDER_INVOICE' else [],
         'filters_active': filters_active,
         'doc_types': Document.DOC_TYPE_CHOICES,
         'selected_property': property_id or '',

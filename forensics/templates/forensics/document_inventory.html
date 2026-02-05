@@ -153,6 +153,11 @@
         color: white;
     }
     
+    .doc-type.builder {
+        background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);
+        color: white;
+    }
+    
     .doc-title {
         font-weight: 600;
         color: #2d3748;
@@ -347,8 +352,9 @@
     {% if filters_active %}
     <div class="row">
         <div class="col-12">
-            {% if documents %}
+            {% if documents or builder_invoices %}
             <div class="modern-card">
+                {% if documents %}
                 <div class="card-header" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); padding: 1.5rem; border: none;">
                     <h5 class="mb-0 text-white">✨ {{ documents.count|intcomma }} Document{{ documents.count|pluralize }} Found</h5>
                 </div>
@@ -363,10 +369,12 @@
                                 🏦
                                 {% elif doc.document_type == 'INVOICE' %}
                                 📄
+                                {% elif doc.document_type == 'BUILDER_INVOICE' %}
+                                🏗️
                                 {% endif %}
                             </div>
                             <div class="doc-content">
-                                <span class="doc-type {% if doc.document_type == 'TAX' %}tax{% elif doc.document_type == 'BANK' %}bank{% elif doc.document_type == 'INVOICE' %}invoice{% endif %}">
+                                <span class="doc-type {% if doc.document_type == 'TAX' %}tax{% elif doc.document_type == 'BANK' %}bank{% elif doc.document_type == 'INVOICE' %}invoice{% elif doc.document_type == 'BUILDER_INVOICE' %}builder{% endif %}">
                                     {{ doc.get_document_type_display }}
                                 </span>
                                 <div class="doc-title">{{ doc.title }}</div>
@@ -398,6 +406,50 @@
                         {% endfor %}
                     </div>
                 </div>
+                {% endif %}
+
+                {% if builder_invoices %}
+                <div class="card-header" style="background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%); padding: 1.5rem; border: none;">
+                    <h5 class="mb-0 text-white">🏗️ {{ builder_invoices|length|intcomma }} Builder Invoice{{ builder_invoices|length|pluralize }} Available</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="doc-grid">
+                        {% for invoice in builder_invoices %}
+                        <div class="doc-card">
+                            <div class="doc-icon" style="background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);">
+                                🏗️
+                            </div>
+                            <div class="doc-content">
+                                <span class="doc-type builder">Builder Invoice</span>
+                                <div class="doc-title">{{ invoice.name }}</div>
+                                
+                                {% if invoice.inventory_unit %}
+                                <div class="doc-meta">
+                                    <strong>Unit:</strong> <a href="{% url 'forensics:inventory_unit_detail' invoice.inventory_unit.id %}" style="color: #667eea; text-decoration: none;">{{ invoice.inventory_unit.property_unit }}</a>
+                                </div>
+                                <div class="doc-meta"><strong>Property:</strong> {{ invoice.inventory_unit.property.short_name }}</div>
+                                {% else %}
+                                <div class="doc-meta text-muted"><em>Not linked to inventory unit</em></div>
+                                {% endif %}
+
+                                {% if invoice.size_mb %}
+                                <div class="doc-meta text-muted" style="margin-top: auto; padding-top: 0.5rem; border-top: 1px solid #e2e8f0;">
+                                    📦 {{ invoice.size_mb|floatformat:2 }} MB
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div style="position: absolute; top: 10px; right: 10px;">
+                            {% if invoice.url %}
+                            <a href="{{ invoice.url }}" target="_blank" class="btn btn-sm btn-primary" title="Download from GCP">
+                                ⬇️ Download
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
             </div>
             {% else %}
             <div class="modern-card">
