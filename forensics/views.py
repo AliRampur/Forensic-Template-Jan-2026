@@ -8,7 +8,7 @@ from django.db.models import Sum, Count, Avg, Q
 from django.core.paginator import Paginator
 import plotly.graph_objects as go
 
-from .inventory_models import Property, InventoryUnit, Commission
+from .inventory_models import Property, InventoryUnit, Commission, Document
 
 
 def home_view(request):
@@ -334,8 +334,7 @@ def inventory_unit_detail_view(request, pk):
 def document_inventory_view(request):
     """Document inventory and retrieval page."""
     from django.db.models import Q
-    from .inventory_models import Document
-    from .gcs_utils import list_builder_invoices, get_file_url
+    from .gcs_utils import list_builder_invoices_simple
     
     # Get filter parameters
     doc_type = request.GET.get('doc_type', '')
@@ -352,23 +351,25 @@ def document_inventory_view(request):
     builder_invoices_with_units = {}
     
     if doc_type == '' or doc_type == 'BUILDER_INVOICE':
-        # Fetch from GCS
-        builder_invoices = list_builder_invoices()
+        # Fetch simple file list from GCS (no signing)
+        builder_invoices = list_builder_invoices_simple()
         
-        # Try to match with database documents and inventory units
+        # Pre-cache all inventory units with builder_pdf_filename for faster matching
+        all_units_by_filename = {}
+        for unit in InventoryUnit.objects.filter(
+            builder_pdf_filename__isnull=False
+        ).exclude(builder_pdf_filename='').select_related('property'):
+            filename = unit.builder_pdf_filename
+            if filename not in all_units_by_filename:
+                all_units_by_filename[filename] = []
+            all_units_by_filename[filename].append(unit)
+        
+        # Match with inventory units by builder_pdf_filename
         for invoice in builder_invoices:
-            doc = Document.objects.filter(
-                document_type='BUILDER_INVOICE',
-                gcs_path=invoice['gcs_path']
-            ).select_related('inventory_unit').first()
+            pdf_filename = invoice['name']
             
-            if doc:
-                invoice['inventory_unit'] = doc.inventory_unit
-                invoice['document_id'] = doc.id
-            
-            # Get signed URL if not already available
-            if not invoice.get('url'):
-                invoice['url'] = get_file_url(invoice['gcs_path'])
+            # Get matching units from cache
+            invoice['matching_units'] = all_units_by_filename.get(pdf_filename, [])
             
             builder_invoices_with_units[invoice['gcs_path']] = invoice
     
@@ -389,9 +390,15 @@ def document_inventory_view(request):
             if property_obj:
                 filtered_invoices = {}
                 for gcs_path, invoice in builder_invoices_with_units.items():
-                    # Filter by property - either through linked inventory unit or match property name in filename
-                    if invoice.get('inventory_unit') and invoice['inventory_unit'].property_id == int(property_id):
-                        filtered_invoices[gcs_path] = invoice
+                    # Filter by property - either through linked inventory units or match property name in filename
+                    if invoice.get('matching_units'):
+                        # Check if any matching unit belongs to this property
+                        has_property_match = any(
+                            unit.property_id == int(property_id) 
+                            for unit in invoice['matching_units']
+                        )
+                        if has_property_match:
+                            filtered_invoices[gcs_path] = invoice
                     # Also try to match by filename pattern (e.g., "GCRV_filename" for Gold Canyon property)
                     elif property_obj.short_name.upper() in invoice['name'].upper():
                         filtered_invoices[gcs_path] = invoice
@@ -467,11 +474,16 @@ def document_inventory_view(request):
     # Determine if filters are active
     filters_active = bool(doc_type)
     
+    # Show builder invoices by default on page load
+    if not filters_active and builder_invoices_with_units:
+        filters_active = True
+        doc_type = 'BUILDER_INVOICE'
+    
     context = {
         'doc_type': doc_type,
         'properties': properties,
         'documents': documents if filters_active and doc_type != 'BUILDER_INVOICE' else None,
-        'builder_invoices': builder_invoices_with_units.values() if filters_active and doc_type == 'BUILDER_INVOICE' else [],
+        'builder_invoices': builder_invoices_with_units.values() if filters_active and doc_type == 'BUILDER_INVOICE' else (builder_invoices_with_units.values() if not filters_active and builder_invoices_with_units else []),
         'filters_active': filters_active,
         'doc_types': Document.DOC_TYPE_CHOICES,
         'selected_property': property_id or '',

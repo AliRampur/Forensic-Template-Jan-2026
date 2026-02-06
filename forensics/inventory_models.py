@@ -301,7 +301,7 @@ class Document(models.Model):
     inventory_unit = models.ForeignKey(
         'InventoryUnit',
         on_delete=models.CASCADE,
-        related_name='documents',
+        related_name='builder_documents',
         null=True,
         blank=True,
         help_text="Associated inventory unit (for builder invoices)"
@@ -383,6 +383,16 @@ class Document(models.Model):
         max_length=500,
         blank=True,
         help_text="Path in GCP Cloud Storage (gs://bucket/path/to/file)"
+    )
+    file_url = models.URLField(
+        max_length=1000,
+        blank=True,
+        help_text="Direct URL to view/download document (may be signed GCS URL)"
+    )
+    file_size_bytes = models.BigIntegerField(
+        null=True,
+        blank=True,
+        help_text="File size in bytes"
     )
     file_size_mb = models.DecimalField(
         max_digits=10,

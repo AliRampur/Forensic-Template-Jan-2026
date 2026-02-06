@@ -37,6 +37,53 @@ def get_gcs_client():
         return None
 
 
+def list_builder_invoices_simple(bucket_name: str = GCP_BUCKET_NAME, 
+                                 folder: str = 'builder_Invoices') -> List[Dict]:
+    """
+    List builder invoice filenames from GCP Cloud Storage WITHOUT signing URLs.
+    Fast operation - just returns filenames.
+    
+    Returns:
+        List of dicts with keys: name, size_bytes, size_mb, gcs_path
+    """
+    client = get_gcs_client()
+    if not client:
+        logger.warning("GCS client unavailable, returning empty list")
+        return []
+    
+    try:
+        bucket = client.bucket(bucket_name)
+        blobs = list(bucket.list_blobs(prefix=folder + '/'))
+        
+        invoices = []
+        for blob in blobs:
+            # Skip folder entries (blobs with empty size)
+            if blob.name.endswith('/'):
+                continue
+            
+            # Skip the folder prefix itself
+            if blob.name == folder + '/':
+                continue
+            
+            file_name = os.path.basename(blob.name)
+            size_mb = Decimal(blob.size / (1024 * 1024)) if blob.size else Decimal(0)
+            
+            invoice = {
+                'name': file_name,
+                'size_bytes': blob.size or 0,
+                'size_mb': float(size_mb),
+                'gcs_path': f"gs://{bucket_name}/{blob.name}",
+            }
+            invoices.append(invoice)
+        
+        logger.info(f"Found {len(invoices)} builder invoices in GCS")
+        return invoices
+    
+    except Exception as e:
+        logger.error(f"Error listing builder invoices: {e}")
+        return []
+
+
 def list_builder_invoices(bucket_name: str = GCP_BUCKET_NAME, 
                           folder: str = 'builder_Invoices') -> List[Dict]:
     """
@@ -67,12 +114,15 @@ def list_builder_invoices(bucket_name: str = GCP_BUCKET_NAME,
             file_name = os.path.basename(blob.name)
             size_mb = Decimal(blob.size / (1024 * 1024)) if blob.size else Decimal(0)
             
+            # Always generate signed URL for temporary authenticated access
+            signed_url = generate_signed_url(blob, expiration_hours=72)  # 3 days validity
+            
             invoice = {
                 'name': file_name,
                 'size_bytes': blob.size or 0,
                 'size_mb': float(size_mb),
                 'gcs_path': f"gs://{bucket_name}/{blob.name}",
-                'url': blob.public_url if blob.public_url else generate_signed_url(blob),
+                'url': signed_url,
             }
             invoices.append(invoice)
         
@@ -86,7 +136,8 @@ def list_builder_invoices(bucket_name: str = GCP_BUCKET_NAME,
 
 def generate_signed_url(blob, expiration_hours: int = 24) -> str:
     """
-    Generate a signed URL for a GCS blob with expiration.
+    Generate a signed URL for a GCS blob with expiration using impersonated credentials.
+    This works with Application Default Credentials without needing a service account key.
     
     Args:
         blob: google.cloud.storage.Blob object
@@ -97,14 +148,45 @@ def generate_signed_url(blob, expiration_hours: int = 24) -> str:
     """
     try:
         from datetime import timedelta
-        return blob.generate_signed_url(
+        from google.auth import impersonated_credentials
+        from google.auth.transport import requests as google_requests
+        import google.auth
+        
+        # Get the source credentials
+        source_credentials, project = google.auth.default()
+        
+        # Use the default compute service account for signing
+        target_service_account = "502947376621-compute@developer.gserviceaccount.com"
+        
+        # Check if we already have service account credentials with a signer
+        if hasattr(source_credentials, 'signer') and hasattr(source_credentials, 'service_account_email'):
+            # Already using service account credentials, use them directly
+            signing_credentials = source_credentials
+        else:
+            # Impersonate the service account to get signing credentials
+            # This calls the IAM API to sign on behalf of the service account
+            target_scopes = ['https://www.googleapis.com/auth/devstorage.read_only']
+            signing_credentials = impersonated_credentials.Credentials(
+                source_credentials=source_credentials,
+                target_principal=target_service_account,
+                target_scopes=target_scopes,
+                lifetime=3600  # Token lifetime in seconds
+            )
+        
+        # Generate signed URL using the impersonated credentials
+        url = blob.generate_signed_url(
             version="v4",
             expiration=timedelta(hours=expiration_hours),
-            method="GET"
+            method="GET",
+            credentials=signing_credentials,
         )
+        logger.info(f"Generated signed URL for {blob.name}")
+        return url
+        
     except Exception as e:
         logger.error(f"Failed to generate signed URL: {e}")
-        return ""
+        # Fallback to public URL (won't work for private buckets but prevents errors)
+        return blob.public_url
 
 
 def get_file_url(gcs_path: str) -> str:

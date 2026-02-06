@@ -415,35 +415,39 @@
                 <div class="card-body p-4">
                     <div class="doc-grid">
                         {% for invoice in builder_invoices %}
-                        <div class="doc-card">
-                            <div class="doc-icon" style="background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);">
-                                🏗️
-                            </div>
-                            <div class="doc-content">
-                                <span class="doc-type builder">Builder Invoice</span>
-                                <div class="doc-title">{{ invoice.name }}</div>
-                                
-                                {% if invoice.inventory_unit %}
-                                <div class="doc-meta">
-                                    <strong>Unit:</strong> <a href="{% url 'forensics:inventory_unit_detail' invoice.inventory_unit.id %}" style="color: #667eea; text-decoration: none;">{{ invoice.inventory_unit.property_unit }}</a>
+                        <div class="doc-card-wrapper" style="position: relative;">
+                            <div class="doc-card" {% if invoice.url %}onclick="window.open('{{ invoice.url }}', '_blank')"{% endif %} style="cursor: pointer;">
+                                <div class="doc-icon" style="background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);">
+                                    🏗️
                                 </div>
-                                <div class="doc-meta"><strong>Property:</strong> {{ invoice.inventory_unit.property.short_name }}</div>
-                                {% else %}
-                                <div class="doc-meta text-muted"><em>Not linked to inventory unit</em></div>
-                                {% endif %}
+                                <div class="doc-content">
+                                    <span class="doc-type builder">Builder Invoice</span>
+                                    <div class="doc-title">{{ invoice.name }}</div>
+                                    
+                                    {% if invoice.matching_units %}
+                                    <div class="doc-meta"><strong>Linked Units:</strong></div>
+                                    {% for unit in invoice.matching_units %}
+                                    <div class="doc-meta">
+                                        <a href="{% url 'forensics:inventory_unit_detail' unit.id %}" style="color: #667eea; text-decoration: none; font-weight: 500;" onclick="event.stopPropagation();">
+                                            {{ unit.property.short_name }}-{{ unit.unit_number }}
+                                        </a>
+                                    </div>
+                                    {% endfor %}
+                                    {% else %}
+                                    <div class="doc-meta text-muted"><em>Not linked to inventory unit</em></div>
+                                    {% endif %}
 
-                                {% if invoice.size_mb %}
-                                <div class="doc-meta text-muted" style="margin-top: auto; padding-top: 0.5rem; border-top: 1px solid #e2e8f0;">
-                                    📦 {{ invoice.size_mb|floatformat:2 }} MB
+                                    {% if invoice.size_mb %}
+                                    <div class="doc-meta text-muted" style="margin-top: auto; padding-top: 0.5rem; border-top: 1px solid #e2e8f0;">
+                                        📦 {{ invoice.size_mb|floatformat:2 }} MB
+                                    </div>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
                             </div>
-                        </div>
-                        <div style="position: absolute; top: 10px; right: 10px;">
-                            {% if invoice.url %}
-                            <a href="{{ invoice.url }}" target="_blank" class="btn btn-sm btn-primary" title="Download from GCP">
-                                ⬇️ Download
-                            </a>
+                            {% if invoice.gcs_path %}
+                            <div style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+                                <small style="color: #718096; font-size: 0.75rem;">📂 GCS File</small>
+                            </div>
                             {% endif %}
                         </div>
                         {% endfor %}
